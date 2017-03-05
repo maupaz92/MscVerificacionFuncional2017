@@ -1,15 +1,13 @@
-//`include interface.sv
-//`include scoreboard.sv
 
 class driver;
 	scoreboard sb;					//scoreboard inputs
 	virtual senales interface_signals;
 	reg reset_neg = 1'h1;
 	
-	function new(senales bus_interface, scoreboard bus_scoreboard);
+	function new(senales interface_signals, scoreboard sb);
 	begin
-		this.interface_signals = bus_interface;
-		this.sb = bus_scoreboard;
+		this.interface_signals = interface_signals;
+		this.sb = sb;
 	end
 	endfunction
 	
