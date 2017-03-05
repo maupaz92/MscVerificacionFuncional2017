@@ -1,4 +1,11 @@
-class scoreboard;
+
+
+class scoreboard #(
+	
+	parameter BIT_ADDRESS 	= 32,
+	parameter BIT_DATA		= 32
+	
+);
 	
 	int afifo[$]; 	// Address  fifo
 	int bfifo[$]; 	// Burst Length fifo
@@ -6,7 +13,7 @@ class scoreboard;
 	
 	task push_address;
 	begin
-		input [31:0] Address;
+		input [BIT_ADDRESS-1:0] Address;
 		afifo.push_back(Address);
 	end
 	endtask
@@ -20,14 +27,14 @@ class scoreboard;
 	
 	task push_data;
 	begin
-		input [31:0]  Data;
+		input [BIT_DATA-1:0]  Data;
 		dfifo.push_back(Data);
 	end
 	endtask
 		
 	task pop_address;
 	begin
-		output [31:0] Address;
+		output [BIT_ADDRESS-1:0] Address;
 		Address = afifo.pop_front(); 
 	end
 	endtask
@@ -41,7 +48,7 @@ class scoreboard;
 	
 	task pop_data;
 	begin
-		output [31:0]  Data;
+		output [BIT_DATA-1:0]  Data;
 		Data = dfifo.pop_front();
 	end
 	endtask	

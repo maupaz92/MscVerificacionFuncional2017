@@ -1,4 +1,9 @@
-class monitor;
+class monitor #(
+
+	parameter BIT_ADDRESS 	= 32,
+	parameter BIT_DATA		= 32
+	
+);
 	scoreboard sb; 
 	virtual senales intf; 
 
@@ -8,23 +13,25 @@ class monitor;
 	endfunction 
 	
 	task burst_read;
-		reg [31:0] Address;
+		reg [BIT_ADDRESS-1:0] Address;
 		reg [7:0]  bl;
 
 		int i,j;
-		reg [31:0]   exp_data;
+		reg [BIT_DATA-1:0]   exp_data;
 		begin
-		   Address = sb.pop_add; 
-		   bl      = sb.pop_burst; 
+		
+		   sb.pop_address(Address); 
+		   sb.pop_burst(bl); 
+		   
 		   @ (negedge intf.sys_clk);
 
 			  for(j=0; j < bl; j++) begin
 				 intf.wb_stb_i        = 1;
 				 intf.wb_cyc_i        = 1;
 				 intf.wb_we_i         = 0;
-				 intf.wb_addr_i       = Address[31:2]+j;
+				 intf.wb_addr_i       = Address[BIT_ADDRESS-1:2]+j;
 
-				 exp_data        = sb.pop_data; // Expected Read Data
+				 sb.pop_data(exp_data); // Expected Read Data
 				 do begin
 					 @ (posedge intf.sys_clk);
 				 end 

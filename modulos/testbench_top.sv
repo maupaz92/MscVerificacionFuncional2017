@@ -45,6 +45,13 @@ module testbench_top;
 		.sdram_clk(sdram_clk),
 		.sys_clk(sys_clk)
 	);
+	
+	
+	test test_program(
+		.driver_port(system_interface.driver_port),
+		.monitor_port(system_interface.monitor_port),
+		.config_port(system_interface.config_port)
+	);
 
 	//***********************************************************************
 	// instancia del DUV 

@@ -1,5 +1,10 @@
 
-class driver;
+class driver #(
+
+	parameter BIT_ADDRESS 	= 32,
+	parameter BIT_DATA		= 32
+	
+);
 	scoreboard sb;														//scoreboard inputs
 	virtual senales interface_signals;
 
@@ -30,7 +35,7 @@ class driver;
 	
 //Write method	
 	task burst_write;
-		input [31:0] Address; 
+		input [BIT_ADDRESS-1:Address; 
 		input [7:0]  bl;
 		int i;
 		begin
@@ -45,7 +50,7 @@ class driver;
 			  interface_signals.wb_cyc_i        = 1;
 			  interface_signals.wb_we_i         = 1;
 			  interface_signals.wb_sel_i        = 4'b1111;
-			  interface_signals.wb_addr_i       = Address[31:2]+i;
+			  interface_signals.wb_addr_i       = Address[BIT_ADDRESS-1:2]+i;
 			  interface_signals.wb_dat_i        = $random & 32'hFFFFFFFF;
 			  sb.push_data(interface_signals.wb_dat_i);
 

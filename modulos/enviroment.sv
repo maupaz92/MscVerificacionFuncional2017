@@ -1,21 +1,23 @@
+
 `include "sdrc_define.v"
+
 class enviroment;
 
-	virtual senal intf_driver;
-	virtual senal intf_monitor;
-	virtual senal intf_config;
-	driver driver;
-	monitor monitor;
-	scoreboard scoreboard;
+	virtual senales intf_driver;
+	virtual senales intf_monitor;
+	virtual senales intf_config;
+	driver local_driver;
+	monitor local_monitor;
+	scoreboard local_scoreboard;
 	
-	function new(virtual senal intf_driver, virtual senal intf_monitor, virtual senal intf_config);
+	function new(virtual senales intf_driver, virtual senales intf_monitor, virtual senales intf_config);
 		begin
 			this.intf_driver = intf_driver;
 			this.intf_monitor = intf_monitor;
 			this.intf_config = intf_config;
-			scoreboard = new();
-			driver = new(intf_driver, scoreboard);
-			monitor = new(intf_monitor, scoreboard);
+			local_scoreboard = new();
+			local_driver = new(intf_driver, local_scoreboard);
+			local_monitor = new(intf_monitor, local_scoreboard);
 		end
 	endfunction
 		
@@ -47,7 +49,7 @@ class enviroment;
 	
 	task reset();
 		begin
-		driver.reset();
+		local_driver.reset();
 		$display(" %0t : Environment  : end of reset() method",$time);
 		end
 	endtask
@@ -64,9 +66,9 @@ class enviroment;
 			input [7:0]  bl;
 			reset();
 			start_configuration();			
-			driver.burst_write(Address,bl);
+			local_driver.burst_write(Address,bl);
 			wait_for_end();
-			monitor.burst_read();
+			local_monitor.burst_read();
 		end
 	endtask
 	
