@@ -9,6 +9,12 @@ program test(
 
 
 	environment test_bench_environment;
+	
+	initial begin
+		
+		test_bench_environment = new();
+	
+	end 
 
 
 
