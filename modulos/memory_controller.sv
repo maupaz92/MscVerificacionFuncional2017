@@ -1,7 +1,7 @@
 
 
 
-module sdrc_top #(
+module memory_controller #(
 	
 	parameter      SDR_DW   = 16;  // SDR Data Width 
 	parameter      SDR_BW   = 2;   // SDR Byte Width
