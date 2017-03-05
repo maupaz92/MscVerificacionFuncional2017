@@ -1,4 +1,4 @@
-class scoreboard
+class scoreboard;
 	
 	int afifo[$]; 	// Address  fifo
 	int bfifo[$]; 	// Burst Length fifo
