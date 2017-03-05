@@ -64,7 +64,7 @@ logic				sdram_resetn	;
 //señales que salen del que inicia la comunicacion con el wishbone, el master
 modport driver_port (
 	input wb_ack_o, sdr_init_done,
-	output wb_addr_i, wb_cyc_i, wb_dat_i, wb_sel_i, wb_stb_i, wb_we_i
+	output wb_addr_i, wb_cyc_i, wb_dat_i, wb_sel_i, wb_stb_i, wb_we_i, wb_rst_i, sdram_resetn
 	);	
 	
 // puerto para el monitor

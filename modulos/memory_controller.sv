@@ -1,16 +1,15 @@
 
 
 
+
+
+
 module memory_controller #(
 	
 	parameter      SDR_DW   = 16;  // SDR Data Width 
 	parameter      SDR_BW   = 2;   // SDR Byte Width
 	
 	parameter      APP_AW   = 26;  // Application Address Width, definido tambien en la interface
-	
-	//parameter      APP_DW   = 32;  // Application Data Width 
-	//parameter      APP_BW   = 4;   // Application Byte Width
-	//parameter      APP_RW   = 9;   // Application Request Width
 	
 	parameter      tw       = 8;   // tag id width
 	parameter      bl       = 9;   // burst_lenght_width 	
@@ -76,7 +75,7 @@ module memory_controller #(
 		.tw(tw),
 		.bl(bl)) u_wb2sdrc (
       // WB bus
-          .wb_rst_i           (!intf_master_controller.resetn 			 ) ,
+          .wb_rst_i           (intf_master_controller.resetn 			 ) ,
           .wb_clk_i           (intf_master_controller.sys_clk            ) ,
 
           .wb_stb_i           (intf_master_controller.wb_stb_i           ) ,
