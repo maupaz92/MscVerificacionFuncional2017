@@ -4,13 +4,14 @@ class driver;
 	virtual senales interface_signals;
 
 	
-	function new(virtual senales interface_signals, scoreboard sb);
+	function new(virtual senales interface_signals_new, scoreboard sb_new);
 	begin
-		this.interface_signals = interface_signals;
-		this.sb = sb;
+		this.interface_signals = interface_signals_new;
+		this.sb = sb_new;
 	end
 	endfunction
-	
+
+//Reset method	
 	task reset();
 		begin			
 			repeat (5)@ (negedge interface_signals.sys_clk);
@@ -27,7 +28,7 @@ class driver;
 		end
 	endtask
 	
-	
+//Write method	
 	task burst_write;
 		input [31:0] Address; 
 		input [7:0]  bl;
