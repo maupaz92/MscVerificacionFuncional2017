@@ -1,6 +1,6 @@
 // modulo de clock
 
-module clk(sdram_clk, sys_clk);
+module clock_gen(sdram_clk, sys_clk);
 
 	parameter P_SYS  = 10;     //    200MHz
 	parameter P_SDR  = 20;     //    100MHz
