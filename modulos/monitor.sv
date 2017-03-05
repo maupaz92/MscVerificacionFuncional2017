@@ -14,8 +14,8 @@ class monitor;
 		int i,j;
 		reg [31:0]   exp_data;
 		begin
-		   Address = sb.pop_add.pop_front(); 
-		   bl      = sb.pop_burst.pop_front(); 
+		   Address = sb.pop_add; 
+		   bl      = sb.pop_burst; 
 		   @ (negedge intf.sys_clk);
 
 			  for(j=0; j < bl; j++) begin
@@ -24,7 +24,7 @@ class monitor;
 				 intf.wb_we_i         = 0;
 				 intf.wb_addr_i       = Address[31:2]+j;
 
-				 exp_data        = sb.pop_data.pop_front(); // Expected Read Data
+				 exp_data        = sb.pop_data; // Expected Read Data
 				 do begin
 					 @ (posedge intf.sys_clk);
 				 end 
