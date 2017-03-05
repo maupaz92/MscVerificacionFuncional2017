@@ -1,11 +1,10 @@
 // modulo de clock
 
-module clk(RESETN, sdram_clk, sys_clk);
+module clk(sdram_clk, sys_clk);
 
 	parameter P_SYS  = 10;     //    200MHz
 	parameter P_SDR  = 20;     //    100MHz
 
-	
 	output reg     sdram_clk;
 	output reg     sys_clk;
 
