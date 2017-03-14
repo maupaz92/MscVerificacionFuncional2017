@@ -1,26 +1,33 @@
+
+
+`include "sdrc_define.v"
 class monitor #(
 
-	parameter BIT_ADDRESS 	= 32,
-	parameter BIT_DATA		= 32
+	int BIT_ADDRESS 	= 32,
+	int BIT_DATA		= 32
 	
 );
 	scoreboard sb; 
-	virtual senales intf; 
+	virtual senales.monitor_port intf; 
 
-	function new(virtual senales intf,scoreboard sb); 
+	function new(virtual senales.monitor_port intf, scoreboard sb); 
 		this.intf = intf; 
 		this.sb = sb; 
 	endfunction 
 	
-	task burst_read;
+	task burst_read(ref reg [31:0] ErrCnt);
+		//ref input reg [31:0] ErrCnt;
 		reg [BIT_ADDRESS-1:0] Address;
 		reg [7:0]  bl;
 
 		int i,j;
 		reg [BIT_DATA-1:0]   exp_data;
 		begin
-		
-		   sb.pop_address(Address); 
+			`ifdef Test_fail
+				Address = 32'h4_bbbb; 
+			`else
+				sb.pop_address(Address);
+			`endif
 		   sb.pop_burst(bl); 
 		   
 		   @ (negedge intf.sys_clk);

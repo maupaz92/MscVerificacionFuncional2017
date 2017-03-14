@@ -1,11 +1,8 @@
 
 
-
-
-
-interface senales#(
-	parameter dw = 32,
-	parameter APP_AW = 26;
+interface senales #(
+	dw = 32,
+	APP_AW = 26
 )(
 	input bit sys_clk,
 	input bit sdram_clk
@@ -47,8 +44,8 @@ logic [3:0]			cfg_sdr_trcd_d	;
 logic [2:0]			cfg_sdr_cas		;
 logic [3:0]			cfg_sdr_trcar_d	;
 logic [3:0]			cfg_sdr_twr_d	;
-logic []			cfg_sdr_rfsh	;  // esto depende de unos parametros LEER ******************************************
-logic []			cfg_sdr_rfmax	;  // este tmb
+logic [11:0]		cfg_sdr_rfsh	;  // esto depende de unos parametros LEER ******************************************
+logic [2:0]			cfg_sdr_rfmax	;  // este tmb
 //outputs 
 logic				sdr_init_done	;
 logic				sdram_resetn	;
@@ -63,13 +60,13 @@ logic				sdram_resetn	;
 
 //señales que salen del que inicia la comunicacion con el wishbone, el master
 modport driver_port (
-	input wb_ack_o, sdr_init_done,
+	input wb_ack_o, sdr_init_done, sys_clk, sdram_clk,
 	output wb_addr_i, wb_cyc_i, wb_dat_i, wb_sel_i, wb_stb_i, wb_we_i, wb_rst_i, sdram_resetn
 	);	
 	
 // puerto para el monitor
 modport monitor_port (
-	input wb_ack_o, wb_dat_o,
+	input wb_ack_o, wb_dat_o, sys_clk, sdram_clk,
 	output wb_addr_i, wb_cyc_i, wb_stb_i, wb_we_i
 	);
 
@@ -78,7 +75,7 @@ modport duv_port (
 	input wb_stb_i, wb_addr_i, wb_we_i, wb_dat_i, wb_sel_i, wb_cyc_i, wb_cti_i, wb_rst_i,
 		cfg_colbits, cfg_req_depth, cfg_sdr_cas, cfg_sdr_en, cfg_sdr_mode_reg, cfg_sdr_rfmax,
 		cfg_sdr_rfsh, cfg_sdr_tras_d, cfg_sdr_trcar_d, cfg_sdr_trcd_d, cfg_sdr_trp_d, cfg_sdr_twr_d,
-		cfg_sdr_width, sdram_resetn
+		cfg_sdr_width, sdram_resetn, sys_clk, sdram_clk,
 	output wb_ack_o, wb_dat_o, sdr_init_done
 	);	
 

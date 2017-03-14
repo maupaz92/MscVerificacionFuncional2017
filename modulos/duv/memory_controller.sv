@@ -6,14 +6,14 @@
 
 module memory_controller #(
 	
-	parameter      SDR_DW   = 16;  // SDR Data Width 
-	parameter      SDR_BW   = 2;   // SDR Byte Width
+	parameter      SDR_DW   = 16,  // SDR Data Width, bits que van hacia el modulo de memoria
+	parameter      SDR_BW   = 2,   // SDR Byte Width, bytes en el bus de datos
 	
-	parameter      APP_AW   = 26;  // Application Address Width, definido tambien en la interface
+	parameter      APP_AW   = 26,  // Application Address Width
 	
-	parameter      tw       = 8;   // tag id width
-	parameter      bl       = 9;   // burst_lenght_width 	
-	parameter      dw       = 32;  // data width, definido tambien en la interface
+	parameter      tw       = 8,   // tag id width
+	parameter      bl       = 9,   // burst_lenght_width 	
+	parameter      dw       = 32  // data width
 )(
 
 	interface intf_master_controller			,
@@ -29,7 +29,7 @@ module memory_controller #(
 	output [1:0] 			sdr_ba             , // SDRAM Bank Enable
 	output [12:0] 			sdr_addr           , // SDRAM Address
 	inout [SDR_DW-1:0] 		sdr_dq                // SDRA Data Input/output	
-)
+);
 
 
 
@@ -52,7 +52,7 @@ module memory_controller #(
 
 	// sdram pad clock is routed back through pad
 	// SDRAM Clock from Pad, used for registering Read Data
-	wire #(1.0) sdram_pad_clk = sdram_clk;
+	wire #(1.0) sdram_pad_clk = intf_master_controller.sdram_clk;
 	
 	/****************************************
 	*  These logic has to be implemented using Pads
@@ -73,9 +73,10 @@ module memory_controller #(
 	wb2sdrc #(
 		.dw(dw),
 		.tw(tw),
-		.bl(bl)) u_wb2sdrc (
+		.bl(bl)
+	) u_wb2sdrc (
       // WB bus
-          .wb_rst_i           (intf_master_controller.resetn 			 ) ,
+          .wb_rst_i           (intf_master_controller.wb_rst_i 			 ) ,
           .wb_clk_i           (intf_master_controller.sys_clk            ) ,
 
           .wb_stb_i           (intf_master_controller.wb_stb_i           ) ,
@@ -91,7 +92,7 @@ module memory_controller #(
 
       //SDRAM Controller Hand-Shake Signal 
           .sdram_clk          (intf_master_controller.sdram_clk       ) ,
-          .sdram_resetn       (intf_master_controller.resetn      	  ) ,
+          .sdram_resetn       (intf_master_controller.sdram_resetn 	  ) ,
           .sdr_req            (app_req            ) ,
           .sdr_req_addr       (app_req_addr       ) ,
           .sdr_req_len        (app_req_len        ) ,
@@ -117,7 +118,7 @@ module memory_controller #(
 		u_sdrc_core (
           .clk                (intf_master_controller.sdram_clk          ) ,
           .pad_clk            (sdram_pad_clk      ) ,
-          .reset_n            (intf_master_controller.resetn	         ) ,
+          .reset_n            (intf_master_controller.sdram_resetn	         ) ,
           .sdr_width          (intf_master_controller.cfg_sdr_width      ) ,
           .cfg_colbits        (intf_master_controller.cfg_colbits        ) ,
 

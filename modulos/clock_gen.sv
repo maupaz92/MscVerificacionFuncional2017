@@ -1,5 +1,7 @@
 // modulo de clock
 
+//`timescale 1ns/1ps
+
 module clock_gen(sdram_clk, sys_clk);
 
 	parameter P_SYS  = 10;     //    200MHz
