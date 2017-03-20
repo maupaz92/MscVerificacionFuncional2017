@@ -166,23 +166,42 @@ module memory_controller #(
           .cfg_sdr_rfmax      (intf_master_controller.cfg_sdr_rfmax      ) 
 	);	
 
+	//***************************//
+	// Assertions for SDRAM Init //
+	//***************************//
+		
+	sequence nop_seq;
+		 ((sdr_cs_n) && (sdr_ras_n) && (sdr_cas_n) && (sdr_we_n) );
+	endsequence
+	
+	sequence precharge;
+		##2 ((~sdr_cs_n) && (~sdr_ras_n) && (sdr_cas_n) && (~sdr_we_n)) ##1 nop_seq;
+	endsequence
+	
+	sequence auto_refresh;
+		((~sdr_cs_n) && (~sdr_ras_n) && (~sdr_cas_n) && (sdr_we_n) );
+	endsequence
+	
+	sequence t_RFC;
+		(##7 auto_refresh ##1 nop_seq) [*14];
+	endsequence
 
+	sequence Load_Mode_Register;
+		##8 ((~sdr_cs_n) && (~sdr_ras_n) && (~sdr_cas_n) && (~sdr_we_n) );
+	endsequence
+	
+	sequence Init_Memory;
+		##1 nop_seq ##8 intf_master_controller.sdr_init_done;
+	endsequence
 
+	property memory_init_prop;
+		@ (posedge intf_master_controller.sdram_clk )
+		// disable iff (intf_master_controller.sdr_init_done)
+		 intf_master_controller.sdram_resetn |-> nop_seq |-> precharge |-> ##3 auto_refresh |-> ##1 nop_seq |-> ##1 t_RFC |-> Load_Mode_Register |-> Init_Memory;
+	endproperty
+	
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	memory_init_prop_assert  : assert property (memory_init_prop) $display("@%0dns Assertion Correct - Memory Initialized", $time); else  $display("@%0dns Assertion Failed", $time);
 
 
 
