@@ -3,11 +3,11 @@ class driver #(
 
 	int BIT_ADDRESS 	= 32
 );
-	scoreboard sb;	
+	scoreboard sb;
 	estimulo1 estimulo_1;
 	virtual senales.driver_port interface_signals;
 
-	
+
 	function new(virtual senales.driver_port interface_signals_new, scoreboard sb_new, estimulo1 estimulos_1_new);
 	begin
 		this.interface_signals = interface_signals_new;
@@ -16,13 +16,13 @@ class driver #(
 	end
 	endfunction
 
-//Reset method	
+//Reset method
 	task reset;
-		begin			
-			interface_signals.wb_rst_i = 1'h0;
-			interface_signals.sdram_resetn = 1'h1;
+		begin
+			//interface_signals.wb_rst_i = 1'h0;
+			//interface_signals.sdram_resetn = 1'h1;
 			//repeat (5)@ (negedge interface_signals.sys_clk);
-			#100;
+			//#100;
 			interface_signals.wb_rst_i = 1'h1;
 			interface_signals.sdram_resetn = 1'h0;					// Applying reset
 			//repeat (5)@ (negedge interface_signals.sys_clk);
@@ -34,8 +34,8 @@ class driver #(
 			#1000;
 		end
 	endtask
-	
-//Write method	
+
+//Write method
 	task burst_write;
 		int i;
 		begin
@@ -56,12 +56,12 @@ class driver #(
 
 			  do begin
 				  @ (posedge interface_signals.sys_clk);
-			  end 
+			  end
 			  while(interface_signals.wb_ack_o == 1'b0);
 				@ (negedge interface_signals.sys_clk);
 					$display("Status: Burst-No: %d  Write Address: %x  WriteData: %x ",i,interface_signals.wb_addr_i,interface_signals.wb_dat_i);
 		   end
-		   
+
 		   interface_signals.wb_stb_i        = 0;
 		   interface_signals.wb_cyc_i        = 0;
 		   interface_signals.wb_we_i         = 'hx;
