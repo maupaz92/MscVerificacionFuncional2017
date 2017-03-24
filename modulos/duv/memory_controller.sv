@@ -16,7 +16,44 @@ module memory_controller #(
 	parameter      dw       = 32  // data width
 )(
 
-	interface intf_master_controller			,
+	//interface intf_master_controller			,
+	
+	// WB bus
+	input                  	wb_rst_i            ,
+	input                  	wb_clk_i            ,
+	
+	input                  	wb_stb_i            ,
+	output                  wb_ack_o            ,
+	input                  	wb_addr_i           ,
+	input                  	wb_we_i             ,
+	input                  	wb_dat_i            ,
+	input                  	wb_sel_i            ,
+	output                  wb_dat_o            ,
+	input                  	wb_cyc_i            ,
+	input                  	wb_cti_i            , 
+
+
+/* Interface to SDRAMs */
+	input                  	sdram_clk           ,
+	input                  	sdram_resetn        ,
+	output                  sdr_init_done       ,
+	
+/* Parameters */
+	
+	input [1:0]			cfg_sdr_width	,
+	input [1:0]			cfg_colbits		,
+	input [1:0]			cfg_req_depth	,
+	input				cfg_sdr_en		,
+	input [12:0]		cfg_sdr_mode_reg,
+	input [3:0]			cfg_sdr_tras_d	,
+	input [3:0]			cfg_sdr_trp_d	,
+	input [3:0]			cfg_sdr_trcd_d	,
+	input [2:0]			cfg_sdr_cas		,
+	input [3:0]			cfg_sdr_trcar_d	,
+	input [3:0]			cfg_sdr_twr_d	,
+	input [11:0]		cfg_sdr_rfsh	,  // esto depende de unos parametros LEER ******************************************
+	input [2:0]			cfg_sdr_rfmax	,
+	
 	//------------------------------------------------
 	// signals to SDRAMs
 	//------------------------------------------------
@@ -52,7 +89,7 @@ module memory_controller #(
 
 	// sdram pad clock is routed back through pad
 	// SDRAM Clock from Pad, used for registering Read Data
-	wire #(1.0) sdram_pad_clk = intf_master_controller.sdram_clk;
+	wire #(1.0) sdram_pad_clk = sdram_clk;
 	
 	/****************************************
 	*  These logic has to be implemented using Pads
@@ -76,23 +113,23 @@ module memory_controller #(
 		.bl(bl)
 	) u_wb2sdrc (
       // WB bus
-          .wb_rst_i           (intf_master_controller.wb_rst_i 			 ) ,
-          .wb_clk_i           (intf_master_controller.sys_clk            ) ,
+          .wb_rst_i           (wb_rst_i 			 ) ,
+          .wb_clk_i           (sys_clk            ) ,
 
-          .wb_stb_i           (intf_master_controller.wb_stb_i           ) ,
-          .wb_ack_o           (intf_master_controller.wb_ack_o           ) ,
-          .wb_addr_i          (intf_master_controller.wb_addr_i          ) ,
-          .wb_we_i            (intf_master_controller.wb_we_i            ) ,
-          .wb_dat_i           (intf_master_controller.wb_dat_i           ) ,
-          .wb_sel_i           (intf_master_controller.wb_sel_i           ) ,
-          .wb_dat_o           (intf_master_controller.wb_dat_o           ) ,
-          .wb_cyc_i           (intf_master_controller.wb_cyc_i           ) ,
-          .wb_cti_i           (intf_master_controller.wb_cti_i           ) , 
+          .wb_stb_i           (wb_stb_i           ) ,
+          .wb_ack_o           (wb_ack_o           ) ,
+          .wb_addr_i          (wb_addr_i          ) ,
+          .wb_we_i            (wb_we_i            ) ,
+          .wb_dat_i           (wb_dat_i           ) ,
+          .wb_sel_i           (wb_sel_i           ) ,
+          .wb_dat_o           (wb_dat_o           ) ,
+          .wb_cyc_i           (wb_cyc_i           ) ,
+          .wb_cti_i           (wb_cti_i           ) , 
 
 
       //SDRAM Controller Hand-Shake Signal 
-          .sdram_clk          (intf_master_controller.sdram_clk       ) ,
-          .sdram_resetn       (intf_master_controller.sdram_resetn 	  ) ,
+          .sdram_clk          (sdram_clk       ) ,
+          .sdram_resetn       (sdram_resetn 	  ) ,
           .sdr_req            (app_req            ) ,
           .sdr_req_addr       (app_req_addr       ) ,
           .sdr_req_len        (app_req_len        ) ,
@@ -116,11 +153,11 @@ module memory_controller #(
 		.SDR_DW(SDR_DW) , 
 		.SDR_BW(SDR_BW)) 
 		u_sdrc_core (
-          .clk                (intf_master_controller.sdram_clk          ) ,
+          .clk                (sdram_clk          ) ,
           .pad_clk            (sdram_pad_clk      ) ,
-          .reset_n            (intf_master_controller.sdram_resetn	         ) ,
-          .sdr_width          (intf_master_controller.cfg_sdr_width      ) ,
-          .cfg_colbits        (intf_master_controller.cfg_colbits        ) ,
+          .reset_n            (sdram_resetn	         ) ,
+          .sdr_width          (cfg_sdr_width      ) ,
+          .cfg_colbits        (cfg_colbits        ) ,
 
  		/* Request from whisbone */
           .app_req            (app_req            ) ,// Transfer Request
@@ -129,7 +166,7 @@ module memory_controller #(
           .app_req_wrap       (1'b0               ) ,// Wrap mode request 
           .app_req_wr_n       (app_req_wr_n       ) ,// 0 => Write request, 1 => read req
           .app_req_ack        (app_req_ack        ) ,// Request has been accepted
-		  .cfg_req_depth      (intf_master_controller.cfg_req_depth      ) ,//how many req. buffer should hold
+		  .cfg_req_depth      (cfg_req_depth      ) ,//how many req. buffer should hold
           .app_wr_data        (app_wr_data        ) ,
           .app_wr_en_n        (app_wr_en_n        ) ,
           .app_rd_data        (app_rd_data        ) ,
@@ -137,7 +174,7 @@ module memory_controller #(
 		  .app_last_rd        (app_last_rd        ) ,
           .app_last_wr        (			          ) , // no se usa 
           .app_wr_next_req    (app_wr_next_req    ) ,
-          .sdr_init_done      (intf_master_controller.sdr_init_done      ) ,
+          .sdr_init_done      (sdr_init_done      ) ,
           .app_req_dma_last   (app_req            ) ,
  
  		/* Interface to SDRAMs */
@@ -154,16 +191,16 @@ module memory_controller #(
           .sdr_den_n          (sdr_den_n          ) ,
  
  		/* Parameters */
-          .cfg_sdr_en         (intf_master_controller.cfg_sdr_en         ) ,
-          .cfg_sdr_mode_reg   (intf_master_controller.cfg_sdr_mode_reg   ) ,
-          .cfg_sdr_tras_d     (intf_master_controller.cfg_sdr_tras_d     ) ,
-          .cfg_sdr_trp_d      (intf_master_controller.cfg_sdr_trp_d      ) ,
-          .cfg_sdr_trcd_d     (intf_master_controller.cfg_sdr_trcd_d     ) ,
-          .cfg_sdr_cas        (intf_master_controller.cfg_sdr_cas        ) ,
-          .cfg_sdr_trcar_d    (intf_master_controller.cfg_sdr_trcar_d    ) ,
-          .cfg_sdr_twr_d      (intf_master_controller.cfg_sdr_twr_d      ) ,
-          .cfg_sdr_rfsh       (intf_master_controller.cfg_sdr_rfsh       ) ,
-          .cfg_sdr_rfmax      (intf_master_controller.cfg_sdr_rfmax      ) 
+          .cfg_sdr_en         (cfg_sdr_en         ) ,
+          .cfg_sdr_mode_reg   (cfg_sdr_mode_reg   ) ,
+          .cfg_sdr_tras_d     (cfg_sdr_tras_d     ) ,
+          .cfg_sdr_trp_d      (cfg_sdr_trp_d      ) ,
+          .cfg_sdr_trcd_d     (cfg_sdr_trcd_d     ) ,
+          .cfg_sdr_cas        (cfg_sdr_cas        ) ,
+          .cfg_sdr_trcar_d    (cfg_sdr_trcar_d    ) ,
+          .cfg_sdr_twr_d      (cfg_sdr_twr_d      ) ,
+          .cfg_sdr_rfsh       (cfg_sdr_rfsh       ) ,
+          .cfg_sdr_rfmax      (cfg_sdr_rfmax      ) 
 	);	
 
 	//***************************//
@@ -191,13 +228,13 @@ module memory_controller #(
 	endsequence
 	
 	sequence Init_Memory;
-		##1 nop_seq ##8 intf_master_controller.sdr_init_done;
+		##1 nop_seq ##8 sdr_init_done;
 	endsequence
 
 	property memory_init_prop;
-		@ (posedge intf_master_controller.sdram_clk )
-		// disable iff (intf_master_controller.sdr_init_done)
-		 intf_master_controller.sdram_resetn |-> nop_seq |-> precharge |-> ##3 auto_refresh |-> ##1 nop_seq |-> ##1 t_RFC |-> Load_Mode_Register |-> Init_Memory;
+		@ (posedge sdram_clk )
+		// disable iff (sdr_init_done)
+		 sdram_resetn |-> nop_seq |-> precharge |-> ##3 auto_refresh |-> ##1 nop_seq |-> ##1 t_RFC |-> Load_Mode_Register |-> Init_Memory;
 	endproperty
 	
 

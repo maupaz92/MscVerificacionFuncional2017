@@ -103,7 +103,45 @@ module testbench_top;
 			.APP_AW(APP_AW)
 		) DUV (
 	`endif
-		.intf_master_controller(system_interface.duv_port),
+		//.intf_master_controller(system_interface.duv_port),
+		
+		.wb_rst_i            (system_interface.wb_rst_i            ),
+		.wb_clk_i            (system_interface.sys_clk            ),
+		
+		.wb_stb_i            (system_interface.wb_stb_i            ),
+		.wb_ack_o            (system_interface.wb_ack_o            ),
+		.wb_addr_i           (system_interface.wb_addr_i           ),
+		.wb_we_i             (system_interface.wb_we_i             ),
+		.wb_dat_i            (system_interface.wb_dat_i            ),
+		.wb_sel_i            (system_interface.wb_sel_i            ),
+		.wb_dat_o            (system_interface.wb_dat_o            ),
+		.wb_cyc_i            (system_interface.wb_cyc_i            ),
+		.wb_cti_i            (system_interface.wb_cti_i            ), 
+
+
+	/* Interface to SDRAMs */
+		.sdram_clk           (system_interface.sdram_clk           ),
+		.sdram_resetn        (system_interface.sdram_resetn        ),
+		.sdr_init_done       (system_interface.sdr_init_done       ),
+		
+	/* Parameters */
+		
+		.cfg_sdr_width	(system_interface.cfg_sdr_width	),
+		.cfg_colbits		(system_interface.cfg_colbits		),
+		.cfg_req_depth	(system_interface.cfg_req_depth	),
+		.cfg_sdr_en		(system_interface.cfg_sdr_en		),
+		.cfg_sdr_mode_reg(system_interface.cfg_sdr_mode_reg),
+		.cfg_sdr_tras_d	(system_interface.cfg_sdr_tras_d	),
+		.cfg_sdr_trp_d	(system_interface.cfg_sdr_trp_d	),
+		.cfg_sdr_trcd_d	(system_interface.cfg_sdr_trcd_d	),
+		.cfg_sdr_cas		(system_interface.cfg_sdr_cas		),
+		.cfg_sdr_trcar_d	(system_interface.cfg_sdr_trcar_d	),
+		.cfg_sdr_twr_d	(system_interface.cfg_sdr_twr_d	),
+		.cfg_sdr_rfsh	(system_interface.cfg_sdr_rfsh	),  
+		.cfg_sdr_rfmax	(system_interface.cfg_sdr_rfmax	),
+		
+		
+		
 		.sdr_cke	(sdr_cke), 
 		.sdr_cs_n	(sdr_cs_n), 
 		.sdr_ras_n	(sdr_ras_n), 
