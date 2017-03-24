@@ -24,13 +24,13 @@ module memory_controller #(
 	
 	input                  	wb_stb_i            ,
 	output                  wb_ack_o            ,
-	input                  	wb_addr_i           ,
+	input [APP_AW-1:0]      wb_addr_i           ,
 	input                  	wb_we_i             ,
-	input                  	wb_dat_i            ,
-	input                  	wb_sel_i            ,
-	output                  wb_dat_o            ,
+	input [dw-1:0]         	wb_dat_i            ,
+	input [dw/8-1:0]       	wb_sel_i            ,
+	output[dw-1:0]          wb_dat_o            ,
 	input                  	wb_cyc_i            ,
-	input                  	wb_cti_i            , 
+	input [2:0]           	wb_cti_i            , 
 
 
 /* Interface to SDRAMs */
@@ -114,7 +114,7 @@ module memory_controller #(
 	) u_wb2sdrc (
       // WB bus
           .wb_rst_i           (wb_rst_i 			 ) ,
-          .wb_clk_i           (sys_clk            ) ,
+          .wb_clk_i           (wb_clk_i            ) ,
 
           .wb_stb_i           (wb_stb_i           ) ,
           .wb_ack_o           (wb_ack_o           ) ,

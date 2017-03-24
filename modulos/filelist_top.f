@@ -2,7 +2,7 @@
 +define+VERBOSE
 +incdir+./RTL/core
 ./testbench_top.sv
-./clock_gen.v
+./clock_gen.sv
 ./interface.sv
 ./environment/estimulo1.sv
 ./environment/estimulo2.sv
@@ -10,7 +10,7 @@
 ./environment/scoreboard.sv
 ./environment/driver.sv
 ./environment/monitor.sv
-./environment/environment.sv
+./environment/enviroment.sv
 ./environment/environment2.sv
 ./test_program.sv
 ./duv/memory_controller.sv
