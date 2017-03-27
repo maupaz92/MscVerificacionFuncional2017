@@ -138,7 +138,7 @@ assign  rd_data = mem[rd_ptr];
    // end
    
 	property overflow;
-		@(posedge clk) (~(wr_en && full));
+		@(posedge clk) not (wr_en && full);
 	endproperty
 	
 	assertion_overflow : assert property (overflow) else $display("%m : Error! sfifo overflow!");
@@ -151,7 +151,7 @@ assign  rd_data = mem[rd_ptr];
    // end
    
 	property underflow;
-		@(posedge clk) (~(rd_en && empty));
+		@(posedge clk) not (rd_en && empty);
 	endproperty
 	
 	assertion_underflow : assert property (underflow) else $display("%m : error! sfifo underflow!");

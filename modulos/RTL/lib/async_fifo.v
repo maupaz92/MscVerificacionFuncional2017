@@ -316,7 +316,7 @@ endfunction
 // end
 
 	property overflow;
-		@(posedge wr_clk) (~(wr_en && full));
+		@(posedge wr_clk) not (wr_en && full);
 	endproperty
 	
 	assertion_afifo_overflow : assert property (overflow) else $display($time, "%m Error! afifo overflow!");
@@ -330,7 +330,7 @@ endfunction
 // end
 
 	property underflow;
-		@(posedge rd_clk) (~(rd_en && empty));
+		@(posedge rd_clk) not (rd_en && empty);
 	endproperty
 	
 	assertion_afifo_underflow : assert property (underflow) else begin 

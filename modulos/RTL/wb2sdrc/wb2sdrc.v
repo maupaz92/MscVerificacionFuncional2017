@@ -244,7 +244,7 @@ end
 // end 
 
 	property wb_fifo_overflow_write;
-		@(posedge wb_clk_i) (~(cmdfifo_full == 1'b1 && cmdfifo_wr == 1'b1));
+		@(posedge wb_clk_i) not (cmdfifo_full == 1'b1 && cmdfifo_wr == 1'b1);
 	endproperty
 	
 	assertion_wb_fifo_overflow_write_command : assert property (wb_fifo_overflow_write) else $display("ERROR:%m COMMAND FIFO WRITE OVERFLOW");
@@ -258,7 +258,7 @@ end
 // end 
 
 	property wb_fifo_overflow_read;
-		@(posedge sdram_clk) (~(cmdfifo_empty == 1'b1 && cmdfifo_rd == 1'b1));
+		@(posedge sdram_clk) not (cmdfifo_empty == 1'b1 && cmdfifo_rd == 1'b1);
 	endproperty
 	
 	assertion_wb_fifo_overflow_read_command : assert property (wb_fifo_overflow_read) else $display("ERROR:%m COMMAND FIFO READ OVERFLOW");
@@ -315,7 +315,7 @@ wire  wrdatafifo_rd  = sdr_wr_next;
 // end 
 
 	property wb_fifo_overflow_write_data;
-		@(posedge wb_clk_i) (~(wrdatafifo_full == 1'b1 && wrdatafifo_wr == 1'b1));
+		@(posedge wb_clk_i) not (wrdatafifo_full == 1'b1 && wrdatafifo_wr == 1'b1);
 	endproperty
 	
 	assertion_wb_fifo_overflow_write_data : assert property (wb_fifo_overflow_write_data) else $display("ERROR:%m WRITE DATA FIFO WRITE OVERFLOW");
@@ -328,7 +328,7 @@ wire  wrdatafifo_rd  = sdr_wr_next;
 
 
 	property wb_fifo_overflow_write_data_read_fifo;
-		@(posedge sdram_clk) (~(wrdatafifo_empty == 1'b1 && wrdatafifo_rd == 1'b1));
+		@(posedge sdram_clk) not (wrdatafifo_empty == 1'b1 && wrdatafifo_rd == 1'b1);
 	endproperty
 	
 	assertion_wb_fifo_overflow_write_data_read_fifo : assert property (wb_fifo_overflow_write_data_read_fifo) else $display("ERROR:%m WRITE DATA FIFO READ OVERFLOW");
@@ -389,7 +389,7 @@ wire    rddatafifo_rd = wb_ack_o & !wb_we_i;
   // end 
 // end 
 	property wb_fifo_overflow_read_data_write_fifo;
-		@(posedge sdram_clk) (~(rddatafifo_full == 1'b1 && rddatafifo_wr == 1'b1));
+		@(posedge sdram_clk) not (rddatafifo_full == 1'b1 && rddatafifo_wr == 1'b1);
 	endproperty
 	
 	assertion_wb_fifo_overflow_read_data_write_fifo : assert property (wb_fifo_overflow_read_data_write_fifo) else $display("ERROR:%m READ DATA FIFO WRITE OVERFLOW");
@@ -401,7 +401,7 @@ wire    rddatafifo_rd = wb_ack_o & !wb_we_i;
 // end 
 
 	property wb_fifo_overflow_read_data_read_fifo;
-		@(posedge wb_clk_i) (~(rddatafifo_empty == 1'b1 && rddatafifo_rd == 1'b1));
+		@(posedge wb_clk_i) not (rddatafifo_empty == 1'b1 && rddatafifo_rd == 1'b1);
 	endproperty
 	
 	assertion_wb_fifo_overflow_read_data_read_fifo : assert property (wb_fifo_overflow_read_data_read_fifo) else $display("ERROR:%m READ DATA FIFO READ OVERFLOW");

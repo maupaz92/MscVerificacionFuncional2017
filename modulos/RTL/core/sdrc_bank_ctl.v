@@ -329,22 +329,22 @@ parameter  SDR_BW   = 2;   // SDR Byte Width
    
     
 	property empty_Fifo;
-		@(posedge clk) (~(~rank_fifo_wr & rank_fifo_rd && rank_cnt == 3'h0));
+		@(posedge clk) not (~rank_fifo_wr & rank_fifo_rd && rank_cnt == 3'h0);
 	endproperty
 			
 	assertion_empty_Fifo : assert property (empty_Fifo) else begin 
 		$display ("%t: %m: ERROR!!! Read from empty Fifo", $time);
-		$stop;
+		//$stop;
 	end // if (rank_fifo_rd && rank_cnt == 3'h0)
 		
 	property full_Fifo;
-		@(posedge clk) (~(rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4));
+		@(posedge clk) not (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4);
 	endproperty
 	
 		
 	assertion_full_Fifo : assert property (full_Fifo) else begin
 		$display ("%t: %m: ERROR!!! Write to full Fifo", $time);
-		$stop;
+		//$stop;
 	end // if (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4)
    
 
