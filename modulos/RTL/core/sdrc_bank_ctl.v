@@ -312,40 +312,19 @@ parameter  SDR_BW   = 2;   // SDR Byte Width
 
    // synopsys translate_off
 
-   // always @ (posedge clk) begin
+   always @ (posedge clk) begin
 
-      // if (~rank_fifo_wr & rank_fifo_rd && rank_cnt == 3'h0) begin
-	 // $display ("%t: %m: ERROR!!! Read from empty Fifo", $time);
-	 // $stop;
-      // end // if (rank_fifo_rd && rank_cnt == 3'h0)
+      if (~rank_fifo_wr & rank_fifo_rd && rank_cnt == 3'h0) begin
+	 $display ("%t: %m: ERROR!!! Read from empty Fifo", $time);
+	 $stop;
+      end // if (rank_fifo_rd && rank_cnt == 3'h0)
 
-      // if (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4) begin
-	 // $display ("%t: %m: ERROR!!! Write to full Fifo", $time);
-	 // $stop;
-      // end // if (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4)
+      if (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4) begin
+	 $display ("%t: %m: ERROR!!! Write to full Fifo", $time);
+	 $stop;
+      end // if (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4)
       
-   // end // always @ (posedge clk)
-   
-    
-	property empty_Fifo;
-		@(posedge clk) (~rank_fifo_wr & rank_fifo_rd && rank_cnt == 3'h0);
-	endproperty
-			
-	assertion_empty_Fifo : assert property (empty_Fifo) begin 
-		$display ("%t: %m: ERROR!!! Read from empty Fifo", $time);
-		$stop;
-	end // if (rank_fifo_rd && rank_cnt == 3'h0)
-		
-	property full_Fifo;
-		@(posedge clk) (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4);
-	endproperty
-	
-		
-	assertion_full_Fifo : assert property (full_Fifo) begin
-		$display ("%t: %m: ERROR!!! Write to full Fifo", $time);
-		$stop;
-	end // if (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4)
-   
+   end // always @ (posedge clk)
    
    // synopsys translate_on
       
