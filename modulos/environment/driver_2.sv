@@ -1,18 +1,18 @@
 
-class driver #(
+class driver_2 #(
 
 	int BIT_ADDRESS 	= 32
 );
 	scoreboard sb;	
-	estimulo1 estimulo_1;
+	estimulo2 estimulo_2;
 	virtual senales.driver_port interface_signals;
 
 	
-	function new(virtual senales.driver_port interface_signals_new, scoreboard sb_new, estimulo1 estimulos_1_new);
+	function new(virtual senales.driver_port interface_signals_new, scoreboard sb_new, estimulo2 estimulos_2_new);
 	begin
 		this.interface_signals = interface_signals_new;
 		this.sb = sb_new;
-		this.estimulo_1 = estimulos_1_new;
+		this.estimulo_2 = estimulos_2_new;
 	end
 	endfunction
 
@@ -39,18 +39,18 @@ class driver #(
 	task burst_write;
 		int i;
 		begin
-		  sb.push_address(estimulo_1.addr);
-		  sb.push_burst(estimulo_1.bl);
+		  sb.push_address(estimulo_2.addr);
+		  sb.push_burst(estimulo_2.bl);
 
 		   @ (negedge interface_signals.sys_clk);
-		   $display("Write Address: %x, Burst Size: %d",estimulo_1.addr,estimulo_1.bl);
+		   $display("Write Address: %x, Burst Size: %d",estimulo_2.addr,estimulo_2.bl);
 
-		   for(i=0; i < estimulo_1.bl; i++) begin
+		   for(i=0; i < estimulo_2.bl; i++) begin
 			  interface_signals.wb_stb_i        = 1;
 			  interface_signals.wb_cyc_i        = 1;
 			  interface_signals.wb_we_i         = 1;
 			  interface_signals.wb_sel_i        = 4'b1111;
-			  interface_signals.wb_addr_i       = estimulo_1.addr[BIT_ADDRESS-1:2]+i;
+			  interface_signals.wb_addr_i       = estimulo_2.addr[BIT_ADDRESS-1:2]+i;
 			  interface_signals.wb_dat_i        = $random & 32'hFFFFFFFF;
 			  sb.push_data(interface_signals.wb_dat_i);
 
