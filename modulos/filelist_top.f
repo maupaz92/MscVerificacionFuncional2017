@@ -25,3 +25,4 @@
 ./RTL/core/sdrc_bs_convert.v
 ./RTL/core/sdrc_req_gen.v
 ./RTL/core/sdrc_xfr_ctl.v 
+./assertions_interface.sv
