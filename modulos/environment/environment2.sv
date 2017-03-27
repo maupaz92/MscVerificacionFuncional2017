@@ -2,11 +2,12 @@ class environment2 extends environment;
 	virtual senales.driver_port intf_driver;
 	virtual senales.monitor_port intf_monitor;
 	virtual senales.config_port intf_config;
-	estimulo1 estimulo_1 = new() ;
+	estimulo1 estimulo_1;
 	
 	function new(virtual senales.driver_port intf_driver,
 				 virtual senales.monitor_port intf_monitor,
 				 virtual senales.config_port intf_config);
+		estimulo1 = new();
 		super.new(intf_driver, intf_monitor, intf_config,estimulo_1);
 	endfunction
 
