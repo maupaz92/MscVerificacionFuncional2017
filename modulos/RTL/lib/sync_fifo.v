@@ -67,10 +67,12 @@ module sync_fifo (clk,
    // synopsys translate_off
 
    initial begin
-      if (AW == 0) begin
-	 $display ("%m : ERROR!!! Fifo depth %d not in range 4 to 256", D);
-      end // if (AW == 0)
-   end // initial begin
+      // if (AW == 0) begin
+	 // $display ("%m : ERROR!!! Fifo depth %d not in range 4 to 256", D);
+      // end // if (AW == 0)
+	  
+	  assert (AW != 0) else $display ("%m : ERROR!!! Fifo depth %d not in range 4 to 256", D);   // if (AW == 0)
+	end // initial begin
 
    // synopsys translate_on
 
@@ -128,17 +130,32 @@ assign  rd_data = mem[rd_ptr];
 
 
 // synopsys translate_off
-   always @(posedge clk) begin
-      if (wr_en && full) begin
-         $display("%m : Error! sfifo overflow!");
-      end
-   end
 
-   always @(posedge clk) begin
-      if (rd_en && empty) begin
-         $display("%m : error! sfifo underflow!");
-      end
-   end
+   // always @(posedge clk) begin
+      // if (wr_en && full) begin
+         // $display("%m : Error! sfifo overflow!");
+      // end
+   // end
+   
+	property overflow;
+		@(posedge clk) (~(wr_en && full));
+	endproperty
+	
+	assertion_overflow : assert property (overflow) else $display("%m : Error! sfifo overflow!");
+	
+
+   // always @(posedge clk) begin
+      // if (rd_en && empty) begin
+         // $display("%m : error! sfifo underflow!");
+      // end
+   // end
+   
+	property underflow;
+		@(posedge clk) (~(rd_en && empty));
+	endproperty
+	
+	assertion_underflow : assert property (underflow) else $display("%m : error! sfifo underflow!");
+
 
 // synopsys translate_on
 //---------------------------------------
