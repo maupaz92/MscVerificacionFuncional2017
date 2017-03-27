@@ -70,7 +70,7 @@ interface assertion_interface;
 	//----Single Write---
 	sequence b;
 		//Classic standard SINGLE WRITE Cycle, Pag43 del wishbone b4 Spec
-		(we & cyc & stb) ##1 (we & ack & cyc & stb) ##1 (~stb & ~cyc & ~ack); 
+		(we & cyc & stb) ##1 (we & cyc & stb) [*1:$] ##1 (~stb & ~cyc); 
 	endsequence
 
 	property Prueba2;
@@ -86,7 +86,7 @@ interface assertion_interface;
 	//----Single Read----
 	sequence c;
 		//Classic standard SINGLE WRITE Cycle, Pag43 del wishbone b4 Spec
-		(~we & cyc & stb) ##1 (~we & ack & cyc & stb) ##1 (~stb & ~cyc & ~ack); 
+		(~we & cyc & stb) ##1 (~we & cyc & stb) [*1:$] ##1 (~stb & ~cyc); 
 	endsequence
 
 	property Prueba3;
