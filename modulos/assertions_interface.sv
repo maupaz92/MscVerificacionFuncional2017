@@ -122,41 +122,44 @@ interface assertion_interface;
 	//************************************************************************************
 	// SDRAM assertions 
 	//************************************************************************************
-	//************************************************************************************
+	//************************************************************************************	
 	
 	sequence nop_seq;
-		 ((sdr_cs_n) && (sdr_ras_n) && (sdr_cas_n) && (sdr_we_n) );
+		 ((sdr_cs_n) & (sdr_ras_n) & (sdr_cas_n) & (sdr_we_n) );
 	endsequence
 	
 	sequence precharge;
-		##2 ((~sdr_cs_n) && (~sdr_ras_n) && (sdr_cas_n) && (~sdr_we_n)) ##1 nop_seq;
+		##2 ((~sdr_cs_n) & (~sdr_ras_n) & (sdr_cas_n) & (~sdr_we_n)) ##1 nop_seq;
 	endsequence
 	
 	sequence auto_refresh;
-		((~sdr_cs_n) && (~sdr_ras_n) && (~sdr_cas_n) && (sdr_we_n) );
+		((~sdr_cs_n) & (~sdr_ras_n) & (~sdr_cas_n) & (sdr_we_n) );
 	endsequence
 	
 	sequence t_RFC;
-		(##7 auto_refresh ##1 nop_seq) [*14];
+		(##7 auto_refresh ##1 nop_seq) [*1:$];
 	endsequence
 
 	sequence Load_Mode_Register;
-		##8 ((~sdr_cs_n) && (~sdr_ras_n) && (~sdr_cas_n) && (~sdr_we_n) );
+		##8 ((~sdr_cs_n) & (~sdr_ras_n) & (~sdr_cas_n) & (~sdr_we_n) );
 	endsequence
 	
 	sequence Init_Memory;
 		##1 nop_seq ##8 sdr_init_done;
 	endsequence
+	
+	sequence master_sequence;
+		##505 nop_seq ##0 precharge ##3 auto_refresh ##1 nop_seq ##1 t_RFC ##0 Load_Mode_Register ##0 Init_Memory ;
+	endsequence
 
 	property memory_init_prop;
 		@ (posedge sdram_clk )
-		// disable iff (sdr_init_done)
-		 sdram_resetn |-> nop_seq |-> precharge |-> ##3 auto_refresh |-> ##1 nop_seq |-> ##1 t_RFC |-> Load_Mode_Register |-> Init_Memory;
+			$rose(sdram_resetn) |-> master_sequence  ;
 	endproperty
 	
 
 	memory_init_prop_assert  : assert property (memory_init_prop) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ @%0dns Assertion Correct - Memory Initialized\n\n\n", $time); 
-	else  $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ @%0dns Assertion Failed\n\n\n", $time);
+	else  $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ @%0dns Assertion Failed - Memory Not Initialized\n\n\n", $time);
 
 
 endinterface
