@@ -207,7 +207,7 @@ module memory_controller #(
 	// Assertions for SDRAM Init //
 	//***************************//
 		
-	sequence nop_seq;
+/* 	sequence nop_seq;
 		 ((sdr_cs_n) && (sdr_ras_n) && (sdr_cas_n) && (sdr_we_n) );
 	endsequence
 	
@@ -240,7 +240,7 @@ module memory_controller #(
 
 	memory_init_prop_assert  : assert property (memory_init_prop) $display("@%0dns Assertion Correct - Memory Initialized", $time); else  $display("@%0dns Assertion Failed", $time);
 
-
+ */
 
 endmodule
 
