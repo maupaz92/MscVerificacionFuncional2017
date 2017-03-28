@@ -1,89 +1,163 @@
 
-
-interface senales #(
-	dw = 32,
-	APP_AW = 26
-)(
-	input bit sys_clk,
-	input bit sdram_clk
-);
+// ruta de las instancias hasta el DUV para obtener las señales del mismo
+`define TOP_PATH  testbench_top.DUV
 
 
-//****************************************
-// Wish Bone Interface
-//****************************************
+interface assertion_interface;
 
-//inputs 
-logic             		wb_rst_i	;
-logic             		wb_stb_i	;
-logic  [APP_AW-1:0]     wb_addr_i	;
-logic            		wb_we_i		; // 1 - Write, 0 - Read
-logic  [dw-1:0]   		wb_dat_i	;
-logic  [dw/8-1:0] 		wb_sel_i	; // Byte enable
-logic             		wb_cyc_i	;
-logic   [2:0]     		wb_cti_i	;
-//outputs
-logic             		wb_ack_o	;
-logic  [dw-1:0]   		wb_dat_o	;
-
-
-
-//****************************************
-// SDRAM Interface
-//****************************************
-
-//inputs
-logic [1:0]			cfg_sdr_width	;
-logic [1:0]			cfg_colbits		;
-logic [1:0]			cfg_req_depth	;
-logic				cfg_sdr_en		;
-logic [12:0]		cfg_sdr_mode_reg;
-logic [3:0]			cfg_sdr_tras_d	;
-logic [3:0]			cfg_sdr_trp_d	;
-logic [3:0]			cfg_sdr_trcd_d	;
-logic [2:0]			cfg_sdr_cas		;
-logic [3:0]			cfg_sdr_trcar_d	;
-logic [3:0]			cfg_sdr_twr_d	;
-logic [11:0]		cfg_sdr_rfsh	;  // esto depende de unos parametros LEER ******************************************
-logic [2:0]			cfg_sdr_rfmax	;  // este tmb
-//outputs 
-logic				sdr_init_done	;
-logic				sdram_resetn	;
-
-
-//****************************************
-// definiciones de modports
-//****************************************
-
-// -------------------------------------   
-// PUERTOS PARA COMUNICACIONES CON WISHBONE
-
-//señales que salen del que inicia la comunicacion con el wishbone, el master
-modport driver_port (
-	input wb_ack_o, sdr_init_done, sys_clk, sdram_clk,
-	output wb_addr_i, wb_cyc_i, wb_dat_i, wb_sel_i, wb_stb_i, wb_we_i, wb_rst_i, sdram_resetn
-	);	
+	//************************************************************************************
 	
-// puerto para el monitor
-modport monitor_port (
-	input wb_ack_o, wb_dat_o, sys_clk, sdram_clk,
-	output wb_addr_i, wb_cyc_i, wb_stb_i, wb_we_i
-	);
+	logic clk;
+	logic reset;
+	logic stb;
+	logic we;
+	logic sel;
+	logic ack;
+	logic cyc;
+	
+	logic 				sdram_clk;
+	logic				sdram_resetn;
+	logic               sdr_cke           ; // SDRAM CKE
+	logic 				sdr_cs_n          ; // SDRAM Chip Select
+	logic               sdr_ras_n         ; // SDRAM ras
+	logic               sdr_cas_n         ; // SDRAM cas
+	logic				sdr_we_n          ;// SDRAM write enable
+	logic               sdr_init_done     ;
+	
+	//************************************************************************************	
+	assign clk 		= `TOP_PATH.wb_clk_i;
+	assign reset 	= `TOP_PATH.wb_rst_i;
+	assign stb 		= `TOP_PATH.wb_stb_i;
+	assign we		= `TOP_PATH.wb_we_i;
+	assign sel 		= `TOP_PATH.wb_sel_i;
+	assign ack		= `TOP_PATH.wb_ack_o;
+	assign cyc		= `TOP_PATH.wb_cyc_i;
+	
+	assign sdr_cke			= `TOP_PATH.sdr_cke;
+	assign sdr_cs_n 		= `TOP_PATH.sdr_cs_n;
+	assign sdr_ras_n		= `TOP_PATH.sdr_ras_n;
+	assign sdr_cas_n		= `TOP_PATH.sdr_cas_n;
+	assign sdr_we_n			= `TOP_PATH.sdr_we_n;
+	assign sdr_init_done	= `TOP_PATH.sdr_init_done;
+	assign sdram_clk		= `TOP_PATH.sdram_clk;
+	assign sdram_resetn		= `TOP_PATH.sdram_resetn;
+	
+	//************************************************************************************
+	//************************************************************************************
+	// wishbone assertions 
+	//************************************************************************************
+	//************************************************************************************
 
-// señales que recibe el modulo wishbone 
-modport duv_port (
-	input wb_stb_i, wb_addr_i, wb_we_i, wb_dat_i, wb_sel_i, wb_cyc_i, wb_cti_i, wb_rst_i,
-		cfg_colbits, cfg_req_depth, cfg_sdr_cas, cfg_sdr_en, cfg_sdr_mode_reg, cfg_sdr_rfmax,
-		cfg_sdr_rfsh, cfg_sdr_tras_d, cfg_sdr_trcar_d, cfg_sdr_trcd_d, cfg_sdr_trp_d, cfg_sdr_twr_d,
-		cfg_sdr_width, sdram_resetn, sys_clk, sdram_clk,
-	output wb_ack_o, wb_dat_o, sdr_init_done
-	);	
+	//------start--rule 3.00 & 3.05 & 3.10----------------------
+	sequence a;
+		//Paginas 31 & 32 del wisbone b4 Spec
+		reset ##1 (reset & ~stb) [*1:$] ##1 (~reset & ~stb);
+	endsequence 
+	  
+	property Prueba1;
+		@ (posedge clk)
+			$rose(reset) |-> a;
+	endproperty
 
-modport config_port(
-	output cfg_colbits, cfg_req_depth, cfg_sdr_cas, cfg_sdr_en, cfg_sdr_mode_reg, cfg_sdr_rfmax,
-		cfg_sdr_rfsh, cfg_sdr_tras_d, cfg_sdr_trcar_d, cfg_sdr_trcd_d, cfg_sdr_trp_d, cfg_sdr_twr_d,
-		cfg_sdr_width, sdram_resetn
-	);
+
+	assert property (Prueba1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO REGLA DE INICIALIZACION 3.00 3.05 3.10\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO REGLA DE INICIALIZACION 3.00 3.05 3.10\n\n\n");
+	//------finish--rule 3.00 & 3.05 & 3.10---------------------
+
+	
+	
+	//------start-----rule 3.25---------------------------------
+	//----Single Write---
+	sequence b;
+		//Classic standard SINGLE WRITE Cycle, Pag43 del wishbone b4 Spec
+		(we & cyc & stb) [*1:$] ##1 $fell(stb & cyc); 
+	endsequence
+
+	property Prueba2;
+		@ (posedge clk)
+			//empieza con el flanco positivo de we y stb simultaneo
+			$rose(we & stb) |-> b; 
+	endproperty
+
+	assert property (Prueba2) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SE CUMPLIO LA REGLA 3.25 en SINGLE WRITE\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA REGLA 3.25 en SINGLE WRITE\n\n\n");
+	
+	
+	//----Single Read----
+	sequence c;
+		//Classic standard SINGLE WRITE Cycle, Pag43 del wishbone b4 Spec
+		(~we & cyc & stb) [*1:$] ##1 $fell(stb & cyc); 
+	endsequence
+
+	property Prueba3;
+		@ (posedge clk)
+			//empieza con el flanco positivo de we y stb simultaneo
+			$rose(stb) && $fell(we) |-> c; 
+	endproperty
+
+	assert property (Prueba3) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SE CUMPLIO LA REGLA 3.25 en SINGLE READ\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA REGLA 3.25 en SINGLE READ\n\n\n");
+
+	//------finish-----rule 3.25-----------------------------
+
+	
+	//-----start----rule 3.35-------------------------
+	sequence d;
+		//Classic standard SINGLE WRITE Cycle, Pag43 del wishbone b4 Spec
+		##1 ack; 
+	endsequence
+
+	property Prueba4;
+		@ (posedge clk)
+			//empieza con el flanco positivo de we y stb simultaneo
+			$rose(stb) && $rose(cyc) |-> d; 
+	endproperty
+
+	assert property (Prueba4) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SE CUMPLIO LA REGLA 3.35\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA REGLA 3.35\n\n\n");
+	//--------finish--rule---3.35-----------
+	
+	
+	//************************************************************************************
+	//************************************************************************************
+	// SDRAM assertions 
+	//************************************************************************************
+	//************************************************************************************
+	
+	sequence nop_seq;
+		 ((sdr_cs_n) && (sdr_ras_n) && (sdr_cas_n) && (sdr_we_n) );
+	endsequence
+	
+	sequence precharge;
+		##2 ((~sdr_cs_n) && (~sdr_ras_n) && (sdr_cas_n) && (~sdr_we_n)) ##1 nop_seq;
+	endsequence
+	
+	sequence auto_refresh;
+		((~sdr_cs_n) && (~sdr_ras_n) && (~sdr_cas_n) && (sdr_we_n) );
+	endsequence
+	
+	sequence t_RFC;
+		(##7 auto_refresh ##1 nop_seq) [*14];
+	endsequence
+
+	sequence Load_Mode_Register;
+		##8 ((~sdr_cs_n) && (~sdr_ras_n) && (~sdr_cas_n) && (~sdr_we_n) );
+	endsequence
+	
+	sequence Init_Memory;
+		##1 nop_seq ##8 sdr_init_done;
+	endsequence
+
+	property memory_init_prop;
+		@ (posedge sdram_clk )
+		// disable iff (sdr_init_done)
+		 sdram_resetn |-> nop_seq |-> precharge |-> ##3 auto_refresh |-> ##1 nop_seq |-> ##1 t_RFC |-> Load_Mode_Register |-> Init_Memory;
+	endproperty
+	
+
+	memory_init_prop_assert  : assert property (memory_init_prop) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ @%0dns Assertion Correct - Memory Initialized\n\n\n", $time); 
+	else  $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ @%0dns Assertion Failed\n\n\n", $time);
+
 
 endinterface
 
