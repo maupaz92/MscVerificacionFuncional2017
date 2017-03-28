@@ -101,6 +101,23 @@ interface assertion_interface;
 	//------finish-----rule 3.25-----------------------------
 
 	
+	//-----start----rule 3.35-------------------------
+	sequence d;
+		//Classic standard SINGLE WRITE Cycle, Pag43 del wishbone b4 Spec
+		##1 ack; 
+	endsequence
+
+	property Prueba4;
+		@ (posedge clk)
+			//empieza con el flanco positivo de we y stb simultaneo
+			$rose(stb) && $rose(cyc) |-> d; 
+	endproperty
+
+	assert property (Prueba4) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SE CUMPLIO LA REGLA 3.35\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA REGLA 3.35\n\n\n");
+
+	
+	
 	//************************************************************************************
 	//************************************************************************************
 	// SDRAM assertions 
