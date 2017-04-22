@@ -13,7 +13,7 @@ module memory_controller #(
 	
 	parameter      tw       = 8,   // tag id width
 	parameter      bl       = 9,   // burst_lenght_width 	
-	parameter      dw       = 32  // data width
+	parameter      dw       = 32  // data width un cambio aqui
 )(
 
 	//interface intf_master_controller			,
