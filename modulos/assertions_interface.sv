@@ -1,6 +1,7 @@
 
 // ruta de las instancias hasta el DUV para obtener las señales del mismo
 `define TOP_PATH  testbench_top.DUV
+`define REQ_GEN_MODULE_PATH testbench_top.DUV.u_sdrc_core.u_req_gen
 
 
 interface assertion_interface;
@@ -24,6 +25,11 @@ interface assertion_interface;
 	logic				sdr_we_n          ;// SDRAM write enable
 	logic               sdr_init_done     ;
 	
+	// signal definition for 3rd delivery, cover plan
+	
+	logic [1:0]			cfg_colbits;
+	logic [25:0]		memory_address;
+	
 	//************************************************************************************	
 	assign clk 		= `TOP_PATH.wb_clk_i;
 	assign reset 	= `TOP_PATH.wb_rst_i;
@@ -42,13 +48,39 @@ interface assertion_interface;
 	assign sdram_clk		= `TOP_PATH.sdram_clk;
 	assign sdram_resetn		= `TOP_PATH.sdram_resetn;
 	
+	
+	
+	//************************************************************************************
+	//************************************************************************************
+	//  signal assignation for 3rd delivery, cover plan
+	//************************************************************************************
+	//************************************************************************************
+	
+	assign cfg_colbits		= `REQ_GEN_MODULE_PATH.cfg_colbits;
+	assign memory_address	= `REQ_GEN_MODULE_PATH.req_addr;
+	
+	//whbox  = whitebox
+	
+	assign whbox_req 	 	= `REQ_GEN_MODULE_PATH.req	  ; //request
+	assign whbox_bank		= `REQ_GEN_MODULE_PATH.r2b_ba	; //bank address requested
+	assign whbox_row  		= `REQ_GEN_MODULE_PATH.r2b_raddr	; //row address requested
+	assign whbox_column  	= `REQ_GEN_MODULE_PATH.r2b_caddr	; //column address requested
+	assign whbox_wren	 	= `REQ_GEN_MODULE_PATH.r2b_write	; //write request = 1 / read request = 0
+	assign whbox_bankready	= `REQ_GEN_MODULE_PATH.b2r_arb_ok	;//Bank controller fifo is not full and ready to accept the command
+	
+	
+	
+	
+	
+	// NOTHING FROM HERE TO BOTTOM 
+	
 	//************************************************************************************
 	//************************************************************************************
 	// wishbone assertions 
 	//************************************************************************************
 	//************************************************************************************
 
-	//------start--rule 3.00 & 3.05 & 3.10----------------------
+/* 	//------start--rule 3.00 & 3.05 & 3.10----------------------
 	sequence a;
 		//Paginas 31 & 32 del wisbone b4 Spec
 		reset ##1 (reset & ~stb) [*1:$] ##1 (~reset & ~stb);
@@ -62,10 +94,10 @@ interface assertion_interface;
 
 	assert property (Prueba1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO REGLA DE INICIALIZACION 3.00 3.05 3.10\n\n\n");
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO REGLA DE INICIALIZACION 3.00 3.05 3.10\n\n\n");
-	//------finish--rule 3.00 & 3.05 & 3.10---------------------
+	//------finish--rule 3.00 & 3.05 & 3.10--------------------- */
 
 	
-	
+	/* 
 	//------start-----rule 3.25---------------------------------
 	//----Single Write---
 	sequence b;
@@ -98,9 +130,9 @@ interface assertion_interface;
 	assert property (Prueba3) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SE CUMPLIO LA REGLA 3.25 en SINGLE READ\n\n\n");
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA REGLA 3.25 en SINGLE READ\n\n\n");
 
-	//------finish-----rule 3.25-----------------------------
+	//------finish-----rule 3.25----------------------------- */
 
-	
+	/* 
 	//-----start----rule 3.35-------------------------
 	sequence d;
 		//Classic standard SINGLE WRITE Cycle, Pag43 del wishbone b4 Spec
@@ -160,6 +192,8 @@ interface assertion_interface;
 
 	memory_init_prop_assert  : assert property (memory_init_prop) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ @%0dns Assertion Correct - Memory Initialized\n\n\n", $time); 
 	else  $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ @%0dns Assertion Failed - Memory Not Initialized\n\n\n", $time);
+	
+	 */
 
 
 endinterface

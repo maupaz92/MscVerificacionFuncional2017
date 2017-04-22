@@ -28,3 +28,4 @@
 ./RTL/core/sdrc_req_gen.v
 ./RTL/core/sdrc_xfr_ctl.v 
 ./assertions_interface.sv
+./aserciones_entrega2.sv

@@ -64,7 +64,11 @@ module testbench_top;
 	//***********************************************************************
 	// Interface assertions
 	//***********************************************************************
-	assertion_interface aserciones();
+	assertion_interface white_box_intf();
+	
+	aserciones_entrega2 aserciones_entrega2_inst(
+		.white_box_intf(white_box_intf)
+	);
 
 	//***********************************************************************
 	// instancia del generador de clock 
