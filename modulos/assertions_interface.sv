@@ -181,7 +181,7 @@ interface assertion_interface;
 	endsequence
 	
 	sequence master_sequence;
-		##505 nop_seq ##0 precharge ##3 auto_refresh ##1 nop_seq ##1 t_RFC ##0 Load_Mode_Register ##0 Init_Memory ;
+		nop_seq [*505] ##0 precharge ##3 auto_refresh ##1 nop_seq ##1 t_RFC ##0 Load_Mode_Register ##0 Init_Memory ;
 	endsequence
 
 	property memory_init_prop;
