@@ -7,13 +7,20 @@ program test(
 	senales.config_port config_port
 );
 
-
-	environment2 test_bench_environment;
+	environment test_bench_environment;
+	estimulo1 #(.APP_AW(26), .APP_BL(9)) primera_prueba;
+	
+	
 	reg [31:0] error_count;
-	reg [31:0] StartAddr;
+	//reg [31:0] StartAddr;
+	
+	
 	initial begin
 		
 		error_count = 0;
+		
+		primera_prueba = new(); 
+		
 		test_bench_environment = new(driver_port, monitor_port, config_port);
 		test_bench_environment.start();
 		
@@ -22,38 +29,16 @@ program test(
 		$display("---------------------------------------------------------------------------- ");
 		$display(" 						Case-1: Single Write/Read Case        			   	   ");
 		$display("---------------------------------------------------------------------------- ");
-		test_bench_environment.run();
-		test_bench_environment.read_data(error_count);
-		test_bench_environment.run();
+		
+		if (primera_prueba.randomize())
+			test_bench_environment.write_to_memory(primera_prueba);
 		test_bench_environment.read_data(error_count);
 		
+		
+		
+		//test_bench_environment.write_to_memory();
+		//test_bench_environment.read_data(error_count);
 		#1000;
-		
-		
-		$display("---------------------------------------------------------------------------- ");
-		$display(" 				Case-2: Cross Over					        			   	   ");
-		$display("---------------------------------------------------------------------------- ");
-		test_bench_environment.run_2();
-		test_bench_environment.read_data(error_count);
-		test_bench_environment.run_2();
-		test_bench_environment.read_data(error_count);
-		
-		#1000;
-		
-		
-		$display("---------------------------------------------------------------------------- ");
-		$display(" 		Case-3: Generacion Aleatoria de fila,columna y banco			   	   ");
-		$display("---------------------------------------------------------------------------- ");
-		
-		test_bench_environment.run_3(); 
-		test_bench_environment.read_data(error_count);	
-		test_bench_environment.run_3(); 
-		test_bench_environment.read_data(error_count);			
-		 
-		 
-		 #1000;
-		 
-		 
 		 
 		 
 		 

@@ -4,16 +4,12 @@
 ./testbench_top.sv
 ./clock_gen.sv
 ./interface.sv
+./environment/estimulo.sv
 ./environment/estimulo1.sv
-./environment/estimulo2.sv
-./environment/estimulo3.sv
 ./environment/scoreboard.sv
 ./environment/driver.sv
-./environment/driver_2.sv
-./environment/driver_3.sv
 ./environment/monitor.sv
 ./environment/environment.sv
-./environment/environment2.sv
 ./test_program.sv
 ./duv/memory_controller.sv
 ./RTL/lib/async_fifo.v

@@ -6,23 +6,23 @@ class environment;
 	virtual senales.config_port intf_config;
 	//estimulo1 estimulo_1;
 	driver local_driver;
-	driver_2 local_driver2;
-	driver_3 local_driver3;
+	//driver_2 local_driver2;
+	//driver_3 local_driver3;
 	monitor local_monitor;
 	scoreboard local_scoreboard;
 	
 	function new(virtual senales.driver_port intf_driver, 
 		virtual senales.monitor_port intf_monitor, 
-		virtual senales.config_port intf_config,
-		estimulo1 estimulo_1, estimulo2 estimulo_2, estimulo3 estimulo_3);
+		virtual senales.config_port intf_config);
+		//estimulo1 estimulo_1, estimulo2 estimulo_2, estimulo3 estimulo_3);
 		
 		this.intf_driver = intf_driver;
 		this.intf_monitor = intf_monitor;
 		this.intf_config = intf_config;
 		local_scoreboard = new();
-		local_driver = new(this.intf_driver, local_scoreboard, estimulo_1);
-		local_driver2 = new(this.intf_driver, local_scoreboard,estimulo_2);
-		local_driver3 = new(this.intf_driver, local_scoreboard,estimulo_3);
+		local_driver #(.BIT_ADDRESS(32)) = new(this.intf_driver, local_scoreboard);
+		//local_driver2 = new(this.intf_driver, local_scoreboard,estimulo_2);
+		//local_driver3 = new(this.intf_driver, local_scoreboard,estimulo_3);
 		local_monitor = new(this.intf_monitor, local_scoreboard);
 	endfunction
 		
@@ -72,14 +72,11 @@ class environment;
 		this.reset();
 	endtask	
 	
-	/*task run;
-		
-		input [31:0] Address; 
-		input [7:0]  bl;
-								
-		this.local_driver.burst_write(Address,bl);
+	task write_to_memory;
+		input estimulo current_stimulus;
+		this.local_driver.burst_write(current_stimulus);
 		this.wait_for_end();
-	endtask*/
+	endtask
 	
 	task read_data;
 		ref reg [31:0] error_count;

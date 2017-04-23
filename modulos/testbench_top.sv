@@ -16,7 +16,7 @@ module testbench_top;
 	wire sys_clk;
 	wire sdram_clk;
 	
-	//REBECA-CA WAS HERE	
+	
 	//--------------------------------------------
 	// SDRAM 
 	//--------------------------------------------

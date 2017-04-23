@@ -2,14 +2,17 @@
 
 //`timescale 1ns/1ps
 
-module aserciones_program_col_addr(assertion_interface white_box_intf);
+module aserciones_program_col_addr(
+	input assertion_interface white_box_intf,
+	input enable_colbits_flag
+	);
 
 
 	logic [11:0] row_temp;
 	logic [11:0] col_temp;
 	logic [1:0] bank_temp;
 	
-	logic enable_colbits_flag;
+	
 	
 	always @ (posedge white_box_intf.clk) begin
 		if (white_box_intf.cfg_colbits == 00) begin 
@@ -76,7 +79,7 @@ module aserciones_program_col_addr(assertion_interface white_box_intf);
 	);
 
 	
-	// coverage
+/* 	// coverage
 	covergroup cg_cfgaddrReq @(posedge white_box_intf.sdram_clk iff enable_colbits_flag);
 		column: coverpoint col_temp{
 			bins col_a = {12'h80};
@@ -90,7 +93,7 @@ module aserciones_program_col_addr(assertion_interface white_box_intf);
 		endgroup
 	
 	// covergroup instance
-	cg_cfgaddrReq cg_addReq = new;
+	cg_cfgaddrReq cg_addReq = new; */
 
 	
 	
