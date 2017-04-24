@@ -26,3 +26,4 @@
 ./assertions_interface.sv
 ./aserciones_entrega2.sv
 ./aserciones_program_col_addr.sv
+./cas_latency.sv

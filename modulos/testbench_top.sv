@@ -83,7 +83,14 @@ module testbench_top;
 		.sys_clk(sys_clk)
 	);
 	
+	//***********************************************************************
+	// CAS Latency Coverage and Assertions
+	//***********************************************************************
 	
+	cas_latency cas_latency_inst(
+		.white_box_intf(white_box_intf)
+		);
+		
 	test test_program(
 		.driver_port(system_interface.driver_port),
 		.monitor_port(system_interface.monitor_port),
