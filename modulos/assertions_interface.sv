@@ -42,7 +42,7 @@ interface assertion_interface;
 	logic [2:0] cas_latency;
 	logic [12:0] sdram_mode_reg;
 	logic x2a_rdok;
-	logic app_rd_valid
+	logic app_rd_valid;
 	
 	//************************************************************************************	
 	assign clk 		= `TOP_PATH.wb_clk_i;
