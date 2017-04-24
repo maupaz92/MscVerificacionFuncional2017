@@ -15,6 +15,7 @@ module aserciones_8_16_32(assertion_interface white_box_intf);
 	logic x2a_wrlast;
 	logic x2a_rdlast;
 	logic x2a_rdok;
+	logic x2a_wrnext;
 	
 	assign app_rd_data[31:0] = white_box_intf.app_rd_data[31:0];
 	assign mem_rd_data[31:0] = white_box_intf.x2a_rddt[31:0];
@@ -27,8 +28,44 @@ module aserciones_8_16_32(assertion_interface white_box_intf);
 	assign x2a_wrlast = white_box_intf.x2a_wrlast;
 	assign x2a_rdlast = white_box_intf.x2a_rdlast;
 	assign x2a_rdok = white_box_intf.x2a_rdok;
+	assign x2a_wrnext = white_box_intf.x2a_wrnext;
+	assign app_wr_next = white_box_intf.app_wr_next;
+	assign app_rd_valid = white_box_intf.app_rd_valid;
+	
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------		
+//----------------------------------------------------------------------------------------------------------------	
+//------------------------Memoria de 32bits-----------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------	
 	
 	
+	
+	
+	sequence xa;
+			(mem_wr_data==app_wr_data) && (app_wr_next==x2a_wrnext) && (app_rd_data==mem_rd_data) && (app_rd_valid==x2a_rdok);
+		endsequence 
+
+	property write_read_32bits;
+			@ (posedge clk)
+				(sdr_width == 2'b00) |-> xa;
+		endproperty
+
+	assert property (write_read_32bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++  FUNCIONANDO READ-WRITE EN 32BITS\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO FUNCIONANDO READ-WRITE EN 32BITS\n\n\n");	
+	
+
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------		
+//----------------------------------------------------------------------------------------------------------------	
+//------------------------Memoria de 16bits-----------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------	
+
+
+
 /* ----------CHEQUEO DE WR_COUNT:  -------------- CASO 16Bits
 Si x2a_wrlast, el wr_count debe estar en 0. Sino, y x2a_wrnext, wr debe contar +1  */
 //Esto se puede hacer con una asertion
@@ -57,7 +94,7 @@ Si x2a_wrlast, el wr_count debe estar en 0. Sino, y x2a_wrnext, wr debe contar +
 
 		property x16write_count_plus1;
 			@ (posedge clk)
-				(x2a_wrstart) |-> z;
+				(x2a_wrnext) |-> z;
 		endproperty
 
 		assert property (x16write_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
@@ -67,42 +104,6 @@ Si x2a_wrlast, el wr_count debe estar en 0. Sino, y x2a_wrnext, wr debe contar +
 		
 	
 
-
-/* ----------CHEQUEO DE WR_COUNT:  -------------- CASO 8Bits
-Si x2a_wrlast, el wr_count debe estar en 0. Sino, y x2a_wrnext, wr debe contar +1  */
-//Esto se puede hacer con una asertion
-
-
-	//PARA EL CASO DE 8 BITS
-//-----para iniciarlizar la cuenta
-		sequence b;
-				(write_count==0);
-			endsequence 
-
-		property x8write_count_0;
-				@ (posedge clk)
-					(x2a_wrlast) |-> b;
-			endproperty
-
-		assert property (x8write_count_0) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
-		else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
-		
-
-		sequence c;
-			(write_count==1) ##1 (wr_count==2) ##1 (wr_count==3) ##1 (wr_count==4); //Para 8 bits se necesitan 4 cuentas
-		endsequence 
-
-		property x8write_count_plus1;
-			@ (posedge clk)
-				(x2a_wrstart) |-> c;
-		endproperty
-
-		assert property (x8write_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
-
-		else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
-	
-	
-	
 	
 	
 	
@@ -135,12 +136,6 @@ Cuando wr_xfr_count[0]=1  a2x_wrdt tiene [31:16], sino, tiene [15:0] (caso 16bit
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA SEGUNDA TRAMA DE 16bits\n\n\n");
 
 	
-/* ----------CHEQUEO DE ESCRITURA (8/16)------------CASO 8Bits
-Cuando wr_xfr_count[0]=1  a2x_wrdt tiene [31:16], sino, tiene [15:0] (caso 16bits)*/	
-	
-	
-	
-	
 
 /* ----------CHEQUEO DE RD_COUNT:  --------------CASO 16Bits
 Si x2a_rdlast, el wr_count debe estar en 0. Sino, y x2a_rdok, read_count debe contar +1  */
@@ -152,36 +147,28 @@ Si x2a_rdlast, el wr_count debe estar en 0. Sino, y x2a_rdok, read_count debe co
 			(read_count==0);
 		endsequence 
 
-	property read_count_0;
+	property x16read_count_0;
 			@ (posedge clk)
 				(x2a_rdlast) |-> h;
 		endproperty
 
-	assert property (read_count_0) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");
+	assert property (x16read_count_0) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");	
 
 //------------para contar +1 
 	
 	sequence i;
-			(read_count==1) ##1 (wr_count==2); //Para 16 bits se necesitan 2 cuentas
+			(read_count==1) ##1 (read_count==2) ##1 (read_count==3) ##1 (read_count==4); //Para 16 bits se necesitan 2 cuentas
 		endsequence 
 
-	property read_count_plus1;
+	property x16read_count_plus1;
 			@ (posedge clk)
 				(x2a_rdok) |-> i;
 		endproperty
 
-	assert property (read_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
+	assert property (x16read_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
 	
-	
-
-
-
-
- 
- 
- 
  
  
  
@@ -207,13 +194,148 @@ Si x2a_rdlast, el wr_count debe estar en 0. Sino, y x2a_rdok, read_count debe co
 
 	assert property (read_16bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO LA	LECTURA\n\n\n");
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA LECTURA\n\n\n");	
- 
- 
- 
- 
- 
- 
- /* ----------CHEQUEO LECTURA------------CASO 8Bits
+ 	
+	
+	
+	
+	
+	
+	
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------		
+//----------------------------------------------------------------------------------------------------------------	
+//------------------------Memoria de 8bits-----------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------	
+//----------------------------------------------------------------------------------------------------------------	
+
+
+/* ----------CHEQUEO DE WR_COUNT:  -------------- CASO 8Bits
+Si x2a_wrlast, el wr_count debe estar en 0. Sino, y x2a_wrnext, wr debe contar +1  */
+//Esto se puede hacer con una asertion
+
+
+	//PARA EL CASO DE 8 BITS
+//-----para iniciarlizar la cuenta
+		sequence b;
+				(write_count==0);
+			endsequence 
+
+		property x8write_count_0;
+				@ (posedge clk)
+					(x2a_wrlast) |-> b;
+			endproperty
+
+		assert property (x8write_count_0) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
+		else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
+		
+
+		sequence c;
+			(write_count==1) ##1 (write_count==2) ##1 (write_count==3) ##1 (write_count==0); //Para 8 bits se necesitan 4 cuentas
+		endsequence 
+
+		property x8write_count_plus1;
+			@ (posedge clk)
+				(x2a_wrstart) |-> c;
+		endproperty
+
+		assert property (x8write_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
+
+		else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
+	
+	
+
+/* ----------CHEQUEO DE ESCRITURA (8/16)------------CASO 8Bits
+Cuando wr_xfr_count[0]=1  a2x_wrdt tiene [31:16], sino, tiene [15:0] (caso 16bits)*/	
+	
+	sequence bd;
+			(app_wr_data[31:24] == mem_wr_data) [=1];
+		endsequence 
+	
+
+	property write1_8bits;
+			@ (posedge clk)
+				(write_count==2'b11) |-> bd;
+		endproperty
+	
+//---------------------------------------	
+		
+	sequence be;
+			(app_wr_data[23:16] == mem_wr_data) [=1];			
+		
+	property write2_8bits;
+			@ (posedge clk)
+				(write_count==2'b10) |-> be;
+		endproperty
+		
+//---------------------------------------
+
+	
+	sequence bx;
+			(app_wr_data[15:8] == mem_wr_data) [=1];			
+		
+	property write3_8bits;
+			@ (posedge clk)
+				(write_count==2'b01) |-> bx;
+		endproperty
+//---------------------------------------
+
+	sequence bz;
+			(app_wr_data[7:0] == mem_wr_data) [=1];			
+		
+	property write4_8bits;
+			@ (posedge clk)
+				(write_count==2'b00) |-> bz;
+		endproperty		
+
+		
+
+	assert property (write1_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA PRIMER TRAMA DE 16bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA PRIMER TRAMA DE 16bits\n\n\n");
+	
+	assert property (write2_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA SEGUNDA TRAMA DE 16bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA SEGUNDA TRAMA DE 16bits\n\n\n");
+
+	assert property (write3_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA TERCER TRAMA DE 16bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA TERCER TRAMA DE 16bits\n\n\n");
+	
+	assert property (write4_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA CUARTA TRAMA DE 16bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA CUARTA TRAMA DE 16bits\n\n\n");
+	
+
+
+/* ----------CHEQUEO DE RD_COUNT:  --------------CASO 8Bits
+Si x2a_rdlast, el wr_count debe estar en 0. Sino, y x2a_rdok, read_count debe contar +1  */
+//Esto se puede hacer con una asertion
+
+	sequence ah;
+			(x8read_count==0);
+		endsequence 
+
+	property read_count_0;
+			@ (posedge clk)
+				(x2a_rdlast) |-> ah;
+		endproperty
+
+	assert property (x8read_count_0) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");	
+
+//------------para contar +1 
+	
+	sequence ai;
+			(read_count==1) ##1 (read_count==2) ##1 (read_count==3); //Para 8 bits se necesitan 3 cuentas
+		endsequence 
+
+	property x8read_count_plus1;
+			@ (posedge clk)
+				(x2a_rdok) |-> ai;
+		endproperty
+
+	assert property (x8read_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
+	
+
+/* ----------CHEQUEO LECTURA------------CASO 8Bits
  if(x2a_rdok) begin
 	   if(sdr_width == 2'b01) // 16 Bit SDR Mode
 	      saved_rd_data[15:0]  <= x2a_rddt;
@@ -224,6 +346,52 @@ Si x2a_rdlast, el wr_count debe estar en 0. Sino, y x2a_rdok, read_count debe co
 	    end
  */
 
+ 
+	sequence ci;
+			(app_rd_data[7:0] == mem_rd_data); 
+		endsequence 
+
+	property read1_8bits;
+			@ (posedge clk)
+				(read_count[1:0] == 2'b00) |-> ci;
+		endproperty
+
+//------------------------------------------------------------------------	
+	
+	sequence di;
+			(app_rd_data[15:8]  <= mem_rd_data); 
+		endsequence 
+
+	property read2_8bits;
+			@ (posedge clk)
+				(read_count[1:0] == 2'b01) |-> di;
+		endproperty
+//--------------------------------------------------------------------		
+	
+	sequence ei;
+			(app_rd_data[23:16] <= mem_rd_data); //Para 16 bits se necesitan 2 cuentas
+		endsequence 
+
+	property read2_8bits;
+			@ (posedge clk)
+				(read_count[1:0] == 2'b10) |-> ei;
+		endproperty
+		
+		
+		
+	assert property (read2_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO LA	LECTURA\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA LECTURA\n\n\n");	
+ 
+	
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
