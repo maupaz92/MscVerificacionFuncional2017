@@ -2,7 +2,9 @@
 // ruta de las instancias hasta el DUV para obtener las señales del mismo
 `define TOP_PATH  testbench_top.DUV
 `define REQ_GEN_MODULE_PATH testbench_top.DUV.u_sdrc_core.u_req_gen
-
+`define SDRC_XFR_CTL_PATH testbench_top.DUV.u_sdrc_core.u_xfr_ctl
+`define SDRC_BS_CONVERT_PATH testbench_top.DUV.u_sdrc_core.u_bs_convert
+//`define CAS_Flag  testbench_top.test
 
 interface assertion_interface;
 
@@ -29,6 +31,18 @@ interface assertion_interface;
 	
 	logic [1:0]			cfg_colbits;
 	logic [25:0]		memory_address;
+	
+	logic 			whbox_req; 	
+	logic [1:0] 	whbox_bank;	
+	logic [12:0]	whbox_row;	
+	logic [12:0]	whbox_column;
+	logic 			whbox_wren;
+	logic 			whbox_bankready;
+	
+	logic [2:0] cas_latency;
+	logic [12:0] sdram_mode_reg;
+	logic x2a_rdok;
+	logic app_rd_valid;
 	
 	//************************************************************************************	
 	assign clk 		= `TOP_PATH.wb_clk_i;
@@ -68,9 +82,16 @@ interface assertion_interface;
 	assign whbox_wren	 	= `REQ_GEN_MODULE_PATH.r2b_write	; //write request = 1 / read request = 0
 	assign whbox_bankready	= `REQ_GEN_MODULE_PATH.b2r_arb_ok	;//Bank controller fifo is not full and ready to accept the command
 	
+	//************************************************************************************
+	//************************************************************************************
+	//  signal assignation for CAS Latency
+	//************************************************************************************
+	//************************************************************************************
 	
-	
-	
+	assign cas_latency			= `SDRC_XFR_CTL_PATH.cas_latency;		//CAS latency 
+	assign sdram_mode_reg 		= `SDRC_XFR_CTL_PATH.sdram_mode_reg;				//Mode Reg 
+	assign x2a_rdok 		= `SDRC_XFR_CTL_PATH.x2a_rdok;				//READ ready 
+	assign app_rd_valid 		= `SDRC_BS_CONVERT_PATH.app_rd_valid;				//READ Data ready
 	
 	// NOTHING FROM HERE TO BOTTOM 
 	

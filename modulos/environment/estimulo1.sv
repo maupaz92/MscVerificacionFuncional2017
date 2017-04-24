@@ -8,7 +8,7 @@ class estimulo1
 	rand logic[APP_BL-1:0] bl;
 	
 	constraint addr_restriction {addr >= 'h4; addr <= 'h1fffff;}
-	constraint bl_restriction {bl <= 'h3;}
+	constraint bl_restriction {bl > 0; bl <= 'h3;}
 	
 	function logic [APP_AW-1:0] get_address;
 		return this.addr;

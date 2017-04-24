@@ -47,7 +47,7 @@ module testbench_top;
 	wire						sdr_cas_n;
 	wire						sdr_we_n;
 	
-	
+	wire assert_flag;
 	
 	//***********************************************************************
 	// Interface 
@@ -69,6 +69,11 @@ module testbench_top;
 	aserciones_entrega2 aserciones_entrega2_inst(
 		.white_box_intf(white_box_intf)
 	);
+	
+	aserciones_program_col_addr col_addr_asser(
+		.white_box_intf(white_box_intf),
+		.enable_colbits_flag(assert_flag)
+	);
 
 	//***********************************************************************
 	// instancia del generador de clock 
@@ -78,11 +83,19 @@ module testbench_top;
 		.sys_clk(sys_clk)
 	);
 	
+	//***********************************************************************
+	// CAS Latency Coverage and Assertions
+	//***********************************************************************
 	
+	cas_latency cas_latency_inst(
+		.white_box_intf(white_box_intf)
+		);
+		
 	test test_program(
 		.driver_port(system_interface.driver_port),
 		.monitor_port(system_interface.monitor_port),
-		.config_port(system_interface.config_port)
+		.config_port(system_interface.config_port),
+		.assert_flag(assert_flag)
 	);
 	
 	//***********************************************************************
