@@ -30,6 +30,13 @@ interface assertion_interface;
 	logic [1:0]			cfg_colbits;
 	logic [25:0]		memory_address;
 	
+	logic 			whbox_req; 	
+	logic [1:0] 	whbox_bank;	
+	logic [12:0]	whbox_row;	
+	logic [12:0]	whbox_column;
+	logic 			whbox_wren;
+	logic 			whbox_bankready;
+	
 	//************************************************************************************	
 	assign clk 		= `TOP_PATH.wb_clk_i;
 	assign reset 	= `TOP_PATH.wb_rst_i;

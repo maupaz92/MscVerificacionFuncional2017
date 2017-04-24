@@ -4,7 +4,8 @@
 program test(
 	senales.driver_port driver_port,
 	senales.monitor_port monitor_port,
-	senales.config_port config_port
+	senales.config_port config_port,
+	output reg assert_flag
 );
 
 	environment test_bench_environment;
@@ -29,17 +30,27 @@ program test(
 		$display("---------------------------------------------------------------------------- ");
 		$display(" 						Case-1: Single Write/Read Case        			   	   ");
 		$display("---------------------------------------------------------------------------- ");
-		
+		assert_flag = 1;
 		if (primera_prueba.randomize())
 			test_bench_environment.write_to_memory(primera_prueba);
+		else
+			$display("---------------------------------------------------------------------mierda");
 		test_bench_environment.read_data(error_count);
+		assert_flag = 0;
+		
+		$display("---------------------------------------------------------------------------- ");
+		$display(" 						Case-2: Single Write/Read Case        			   	   ");
+		$display("---------------------------------------------------------------------------- ");
+		assert_flag = 1;
+		if (primera_prueba.randomize())
+			test_bench_environment.write_to_memory(primera_prueba);
+		else
+			$display("---------------------------------------------------------------------mierda");
+		test_bench_environment.read_data(error_count);
+		assert_flag = 0;
 		
 		
-		
-		//test_bench_environment.write_to_memory();
-		//test_bench_environment.read_data(error_count);
 		#1000;
-		 
 		 
 		 
 		$display("###############################");
