@@ -121,7 +121,7 @@ x16_wr_count_0:	assert property (x16write_count_0) $display("\n\n\n+++++++++++++
 
 x16_write_countplus1:		assert property (x16write_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
 
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
+//	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
 	
 		 
 	
@@ -169,7 +169,7 @@ wr2_16bits:	assert property (write2_16bits) $display("\n\n\n++++++++++++++++++++
 		endproperty
 
 x16_read_count:	assert property (x16read_count_0) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");	
+//	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE RD_COUNT\n\n\n");	
 
 //------------para contar +1 
 	
@@ -183,7 +183,7 @@ x16_read_count:	assert property (x16read_count_0) $display("\n\n\n++++++++++++++
 		endproperty
 
 x16_read_countplus1:	assert property (x16read_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
+//	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
 	
  
  
@@ -272,7 +272,7 @@ x8_wr_count0:		assert property (x8write_count_0) $display("\n\n\n+++++++++++++++
 
 x8_wr_countplus1:		assert property (x8write_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
 
-		else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
+//		else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
 	
 	
 
@@ -366,7 +366,7 @@ x8_rd_count0:	assert property (read_count_0) $display("\n\n\n+++++++++++++++++++
 		endproperty
 
 x8_rd_countplus1:	assert property (x8read_count_plus1) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
+//	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
 	
 
 	// ----------CHEQUEO LECTURA------------CASO 8Bits
