@@ -3,63 +3,27 @@ module cas_latency(assertion_interface white_box_intf
 	
 	//Verificacion de solicitud de lectura
 
-	logic Read_ack =  ~white_box_intf.sdr_cs_n & white_box_intf.sdr_ras_n & ~white_box_intf.sdr_cas_n & white_box_intf.sdr_we_n; 
 	logic enable_cas_flag;
-	logic sdram_mode_reg_23;
-	logic sdram_mode_reg_33;
+
 	
-	
-	
-	
-	
-	assign enable_cas_flag  = (white_box_intf.cas_latency == 3'h2) ? 1'b1 : 1'b0;			//CAS 2 cuando es 1
-	//assign sdram_mode_reg_23  = (white_box_intf.sdram_mode_reg == 13'h23) ? 1'b1 : 1'b0;
-	//assign sdram_mode_reg_33  = (white_box_intf.sdram_mode_reg == 13'h33) ? 1'b1 : 1'b0;
+	assign enable_cas_flag  = (white_box_intf.cas_latency == 3'h2) ? 1'b1 : 1'b0;			//1 cuando es CAS 2
 		
-//Cobertura cuando CAS es 2 o 3	
+//Cobertura cuando de que CAS sea 2 o 3	
 	covergroup cas_verif @(posedge white_box_intf.sdram_clk);
 		cov_Cfg_sdr_cas_cas: coverpoint white_box_intf.cas_latency{
-			bins sdr_cas = {3'h2, 3'h3};							//Evalua configuracion de CAS Latency
+			bins sdr_cas = {3'h2, 3'h3};							//Evalua configuracion de CAS Latency que se diera ambos casos
 			}
 		
 		cov_CfgMode_reg_cas: coverpoint white_box_intf.sdram_mode_reg{
-			bins mode_reg_cas2 = {13'h023, 13'h033};			//Evalua configuracion de Mode reg
+			bins mode_reg_cas2 = {13'h023, 13'h033};			//Evalua configuracion de Mode reg que sucesiera ambos casos
 			}
 	
 	endgroup	
-	
-	//Cobertura de que haya un read
-	covergroup read_verif @(posedge white_box_intf.sdram_clk);
-		cov_Cfg_read_ack_cas: coverpoint Read_ack{
-			bins Read_ack_cas = {1};
-			}
-			
-		cov_Cfg_x2a_rdok_cas: coverpoint white_box_intf.x2a_rdok{
-			bins  x2a_rdok_cas = {1};
-			}
 
-	endgroup
-	
 	// covergroup instance
-	cas_verif cas_verif_inst = new;
-	read_verif cas_read_verif = new;
-
+	cas_verif cas_verif_inst = new;	
 	
-	property ciclos_cas2;
-		@(negedge white_box_intf.clk) disable iff(~enable_cas_flag) 
-		($rose(white_box_intf.x2a_rdok) |->  ##4 white_box_intf.app_rd_valid); 
-	endproperty
-	
-	Cfg_ciclos_cas2: cover property (ciclos_cas2) $display("Ciclos Cas 2 exitoso");
-	
-	property ciclos_cas3;
-		@(negedge white_box_intf.clk) disable iff(enable_cas_flag) 
-		($rose(white_box_intf.x2a_rdok) |-> ##6 white_box_intf.app_rd_valid); 
-	endproperty
-	
-	
-	Cfg_ciclos_cas3: cover property (ciclos_cas3) $display("Ciclos Cas 3 exitoso");
-	
+	//Verificacion de configuracion de registros
 	property verf_cas2;
 		@(posedge white_box_intf.clk) disable iff(~enable_cas_flag)
 		((white_box_intf.sdram_mode_reg == 13'h23));
@@ -70,12 +34,79 @@ module cas_latency(assertion_interface white_box_intf
 		((white_box_intf.sdram_mode_reg == 13'h33));
 	endproperty
 	
-	assert_verf_cas2: assert property (verf_cas2) $display("Registro cfg Cas 2 exitoso");
-	else $error("verf_cas2 error");
+	assert_verf_cas2: assert property (verf_cas2) else $error("verf_cas2 error");					//Evalua configuracion del registro cas cuando es igual a 2
 	
-	assert_verf_cas3: assert property (verf_cas3) $display("Registro cfg Cas 3 exitoso");
-	else $error("verf_cas3 error");
+	assert_verf_cas3: assert property (verf_cas3) else $error("verf_cas3 error");					//Evalua configuracion del registro cas cuando es igual a 3
+	
+	//Verificacion de que el dato sea valido
+	
+	sequence read_ready;
+		white_box_intf.x2a_rdok == 1'b1;
+	endsequence
+	
+	sequence ack_data_verf;		
+		(white_box_intf.data_read == 32'hzzzzzzzz);
+	endsequence
+	
+	sequence data_valid;
+		white_box_intf.app_rd_valid == 1'b1;
+	endsequence
+	
+	property Dato_valido_Listo;
+		@(posedge white_box_intf.clk)
+		(data_valid |-> not ack_data_verf); 
+	endproperty
+	
+	Cfg_cDato_listo3: assert property (Dato_valido_Listo) else $error("Dato_listo 3 error"); 		//Evalua que el dato este cuando se supone tiene que estar
 	
 	
+	sequence app_rd_valid_verf;
+		white_box_intf.app_rd_valid == white_box_intf.sdr_rd_valid;
+	endsequence
+	
+	sequence app_rd_data_verf;
+		white_box_intf.data_read == white_box_intf.sdr_rd_data;
+	endsequence
+	
+	sequence cas_latency_verf;
+		white_box_intf.cas_latency == white_box_intf.cfg_sdr_cas;
+	endsequence
+	
+	sequence sdram_mode_reg_verf;
+		white_box_intf.sdram_mode_reg == white_box_intf.cfg_sdr_mode_reg;
+	endsequence
+	
+	
+	
+	property Senales_verf;
+		@(posedge white_box_intf.clk)
+		(app_rd_valid_verf |-> app_rd_data_verf |-> cas_latency_verf |-> sdram_mode_reg_verf); 
+	endproperty
+	
+	Cfg_Verificacion_Senales: assert property (Senales_verf) else $error("Cfg_Verificacion_Senales 3 error"); //Evalua que el dato este cuando se supone tiene que estar
+	
+	
+	
+	//Verificacion de ciclos
+	
+	// sequence Mem_32;
+		// read_ready and  data_valid;
+	// endsequence
+	
+	// sequence Mem_16_cas3;
+		// read_ready ##2  data_valid;
+	// endsequence
+
+	// sequence Mem_8_cas3;
+		// read_ready ##6  data_valid;
+	// endsequence
+	
+	// property ciclos_cas2;
+		// @(posedge white_box_intf.sdram_clk) disable iff(enable_cas_flag)
+		// (Mem_32 or Mem_16_cas3 or Mem_8_cas3); 
+	// endproperty
+	
+	// Cfg_ciclos_cas2: assert property (ciclos_cas2) $display("Ciclos_listo exitoso");			//Evalua que el dato este cuando se supone tiene que estar
+	// else $error("Ciclos_listo 3 error");
 	
 endmodule 	
