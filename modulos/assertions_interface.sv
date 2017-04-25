@@ -27,6 +27,8 @@ interface assertion_interface;
 	logic				sdr_we_n          ;// SDRAM write enable
 	logic               sdr_init_done     ;
 	
+	logic [12:0]		sdr_addr;
+	
 	logic               sdr_rd_valid     ;
 	logic [31:0]        sdr_rd_data     ;
 	logic [2:0]         cfg_sdr_cas     ;
@@ -86,6 +88,8 @@ interface assertion_interface;
 	assign sdram_clk		= `TOP_PATH.sdram_clk;
 	assign sdram_resetn		= `TOP_PATH.sdram_resetn;
 	
+	assign sdr_addr			= `TOP_PATH.sdr_addr;
+	
 	assign sdr_rd_valid		= `wb2sdrc_PATH.sdr_rd_valid;
 	assign sdr_rd_data		= `wb2sdrc_PATH.sdr_rd_data;
 	assign cfg_sdr_cas		= `TOP_PATH.cfg_sdr_cas;
@@ -120,6 +124,7 @@ interface assertion_interface;
 	assign cas_latency			= `SDRC_XFR_CTL_PATH.cas_latency;		//CAS latency 
 	assign sdram_mode_reg 		= `SDRC_XFR_CTL_PATH.sdram_mode_reg;				//Mode Reg 
 	assign x2a_rdok 		= `SDRC_XFR_CTL_PATH.x2a_rdok;				//READ ready 
+	assign x2a_wrstart		= `SDRC_XFR_CTL_PATH.x2a_wrstart;				//READ ready 
 	assign app_rd_valid 		= `SDRC_BS_CONVERT_PATH.app_rd_valid;				//READ Data ready
 	assign data_read = `SDRC_BS_CONVERT_PATH.app_rd_data;				//READ Data
 	

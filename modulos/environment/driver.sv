@@ -51,7 +51,7 @@ class driver #(
 			  interface_signals.wb_sel_i        = 4'b1111;
 			  temp_address = current_stimulus.get_address();
 			  interface_signals.wb_addr_i       = temp_address[BIT_ADDRESS-1:2]+i;
-			  interface_signals.wb_dat_i        = $random & 32'hFFFFFFFF;
+			  interface_signals.wb_dat_i        = current_stimulus.get_data();
 			  sb.push_data(interface_signals.wb_dat_i);
 
 			  do begin
@@ -66,7 +66,7 @@ class driver #(
 		   interface_signals.wb_stb_i        = 0;
 		   interface_signals.wb_cyc_i        = 0;
 		   interface_signals.wb_we_i         = 'hx;
-		   interface_signals.wb_sel_i        = 'hx;
+		   interface_signals.wb_sel_i        = 'h0;
 		   interface_signals.wb_addr_i       = 'hx;
 		   interface_signals.wb_dat_i        = 'hx;
 		end

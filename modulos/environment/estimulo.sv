@@ -5,6 +5,7 @@ virtual class estimulo #(
 
 	pure virtual function logic [APP_AW-1:0] get_address();
 	pure virtual function logic [APP_BL-1:0] get_burstLength();
+	pure virtual function logic [31:0] get_data();
 
 
 endclass
