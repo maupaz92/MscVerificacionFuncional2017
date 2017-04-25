@@ -44,6 +44,24 @@ interface assertion_interface;
 	logic x2a_rdok;
 	logic app_rd_valid;
 	
+	//8/16/32 signals---------------------->
+	
+	logic [31:0] mem_wr_data;
+	logic [31:0] app_wr_data;
+	logic [31:0] mem_rd_data;
+	logic [31:0] app_rd_data;
+	logic [1:0]sdr_width;
+	logic [1:0] read_count;
+	logic [1:0] write_count;
+	logic x2a_wrstart;
+	logic x2a_wrlast;
+	logic x2a_rdlast;
+	logic x2a_rdok;
+	logic x2a_wrnext;
+	logic app_rd_valid;
+	logic app_wr_next;
+	
+	
 	//************************************************************************************	
 	assign clk 		= `TOP_PATH.wb_clk_i;
 	assign reset 	= `TOP_PATH.wb_rst_i;
@@ -92,6 +110,36 @@ interface assertion_interface;
 	assign sdram_mode_reg 		= `SDRC_XFR_CTL_PATH.sdram_mode_reg;				//Mode Reg 
 	assign x2a_rdok 		= `SDRC_XFR_CTL_PATH.x2a_rdok;				//READ ready 
 	assign app_rd_valid 		= `SDRC_BS_CONVERT_PATH.app_rd_valid;				//READ Data ready
+	
+	
+	//************************************************************************************
+	//************************************************************************************
+	//  signal assignation for 3rd delivery, 8/16/32
+	//************************************************************************************
+	//************************************************************************************
+	
+	assign app_rd_data = `SDRC_BS_CONVERT_PATH.app_rd_data;
+	assign x2a_rddt = `SDRC_BS_CONVERT_PATH.x2a_rddt;
+	assign app_wr_data = `SDRC_BS_CONVERT_PATH.app_wr_data;
+	assign a2x_wrdt = `SDRC_BS_CONVERT_PATH.a2x_wrdt;
+	assign rd_xfr_count = `SDRC_BS_CONVERT_PATH.rd_xfr_count;
+	assign wr_xfr_count = `SDRC_BS_CONVERT_PATH.wr_xfr_count;
+	assign sdr_width = `SDRC_BS_CONVERT_PATH.sdr_width;	
+	assign x2a_wrstart = `SDRC_BS_CONVERT_PATH.x2a_wrstart;
+	assign x2a_wrlast = `SDRC_BS_CONVERT_PATH.x2a_wrlast;
+	assign x2a_rdlast = `SDRC_BS_CONVERT_PATH.x2a_rdlast;
+	//assign x2a_rdok = `SDRC_BS_CONVERT_PATH.x2a_rdok;  --> ya esta asignada en el CAS
+	assign x2a_wrnext = `SDRC_BS_CONVERT_PATH.x2a_wrnext;
+	assign app_wr_next = `SDRC_BS_CONVERT_PATH.app_wr_next;
+	//assign app_rd_valid = `SDRC_BS_CONVERT_PATH.app_rd_valid; --> ya esta asignada en el CAS
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// NOTHING FROM HERE TO BOTTOM 
 	

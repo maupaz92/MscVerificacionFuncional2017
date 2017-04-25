@@ -2,7 +2,7 @@
 `timescale 1ns/1ps
 
 //`include "./RTL/core/sdr_define.v"
-`define SDR_32BIT
+//`define SDR_16BIT
 
 module testbench_top;
 
@@ -74,6 +74,11 @@ module testbench_top;
 		.white_box_intf(white_box_intf),
 		.enable_colbits_flag(assert_flag)
 	);
+	
+	aserciones_8_16_32 aserciones_8_16_32_ints(
+		.white_box_intf(white_box_intf)
+	);
+	
 
 	//***********************************************************************
 	// instancia del generador de clock 

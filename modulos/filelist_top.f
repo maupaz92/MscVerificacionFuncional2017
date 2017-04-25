@@ -27,3 +27,4 @@
 ./aserciones_entrega2.sv
 ./aserciones_program_col_addr.sv
 ./cas_latency.sv
+./aserciones_8_16_32.sv
