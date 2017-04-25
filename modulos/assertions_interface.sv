@@ -51,7 +51,7 @@ interface assertion_interface;
 	logic x2a_rdok;
 	logic app_rd_valid;
 	logic [31:0] data_read;
-	
+	logic rd_start;
 	//8/16/32 signals---------------------->
 	
 	logic [31:0] mem_wr_data;
@@ -124,6 +124,7 @@ interface assertion_interface;
 	assign cas_latency			= `SDRC_XFR_CTL_PATH.cas_latency;		//CAS latency 
 	assign sdram_mode_reg 		= `SDRC_XFR_CTL_PATH.sdram_mode_reg;				//Mode Reg 
 	assign x2a_rdok 		= `SDRC_XFR_CTL_PATH.x2a_rdok;				//READ ready 
+	assign rd_start 		= `SDRC_XFR_CTL_PATH.rd_start;				//start ready 
 	assign x2a_wrstart		= `SDRC_XFR_CTL_PATH.x2a_wrstart;				//READ ready 
 	assign app_rd_valid 		= `SDRC_BS_CONVERT_PATH.app_rd_valid;				//READ Data ready
 	assign data_read = `SDRC_BS_CONVERT_PATH.app_rd_data;				//READ Data
@@ -143,7 +144,7 @@ interface assertion_interface;
 	assign rd_xfr_count = `SDRC_BS_CONVERT_PATH.rd_xfr_count;
 	assign wr_xfr_count = `SDRC_BS_CONVERT_PATH.wr_xfr_count;
 	assign sdr_width = `SDRC_BS_CONVERT_PATH.sdr_width;	
-	assign x2a_wrstart = `SDRC_BS_CONVERT_PATH.x2a_wrstart;
+	//assign x2a_wrstart = `SDRC_BS_CONVERT_PATH.x2a_wrstart;
 	assign x2a_wrlast = `SDRC_BS_CONVERT_PATH.x2a_wrlast;
 	assign x2a_rdlast = `SDRC_BS_CONVERT_PATH.x2a_rdlast;
 	//assign x2a_rdok = `SDRC_BS_CONVERT_PATH.x2a_rdok;  --> ya esta asignada en el CAS

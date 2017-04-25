@@ -19,7 +19,7 @@ class estimulo1
 		return this.bl;
 	endfunction
 	
-	function logic [APP_BL-1:0] get_data;
+	function logic [31:0] get_data;
 		return this.data;
 	endfunction
 	
