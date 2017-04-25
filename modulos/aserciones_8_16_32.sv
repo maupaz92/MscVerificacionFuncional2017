@@ -19,6 +19,7 @@ module aserciones_8_16_32(assertion_interface white_box_intf);
 	logic app_rd_valid;
 	logic app_wr_next;
 	logic clk;
+	logic [23:0] saved_rd_data;
 	
 	assign app_rd_data = white_box_intf.app_rd_data;
 	assign mem_rd_data = white_box_intf.x2a_rddt;
@@ -34,8 +35,8 @@ module aserciones_8_16_32(assertion_interface white_box_intf);
 	assign x2a_wrnext = white_box_intf.x2a_wrnext;
 	assign app_wr_next = white_box_intf.app_wr_next;
 	assign app_rd_valid = white_box_intf.app_rd_valid;
-	assign clk = white_box_intf.clk;
-	
+	assign saved_rd_data = white_box_intf.saved_rd_data;
+	assign clk = white_box_intf.sdram_clk;
 //----------------------------------------------------------------------------------------------------------------	
 //----------------------------------------------------------------------------------------------------------------		
 //----------------------------------------------------------------------------------------------------------------	
@@ -122,13 +123,7 @@ x16_write_countplus1:		assert property (x16write_count_plus1) $display("\n\n\n++
 
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO DE WR_COUNT\n\n\n");	
 	
-		
-	
-
-	
-	
-	
-	 
+		 
 	
 // ----------CHEQUEO DE ESCRITURA (8/16)------------CASO 16Bits
 //Cuando wr_xfr_count[0]=1  a2x_wrdt tiene [31:16], sino, tiene [15:0] (caso 16bits)
@@ -266,8 +261,8 @@ x8_wr_count0:		assert property (x8write_count_0) $display("\n\n\n+++++++++++++++
 		else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO EL CONTEO INICIAL DE WR_COUNT\n\n\n");	
 		
 
-		sequence c;
-			(write_count==1) ##1 (write_count==2) ##1 (write_count==3) ##1 (write_count==0); //Para 8 bits se necesitan 4 cuentas
+		sequence c; 
+		(write_count==1) [*1:$] ##1 (write_count==2) [*1:$] ##1 (write_count==0); 
 		endsequence 
 
 		property x8write_count_plus1;
@@ -362,7 +357,7 @@ x8_rd_count0:	assert property (read_count_0) $display("\n\n\n+++++++++++++++++++
 //------------para contar +1 
 	
 	sequence ai;
-			(read_count==1) ##1 (read_count==2) ##1 (read_count==3); //Para 8 bits se necesitan 3 cuentas
+			(read_count==1) [*1:$] ##1 (read_count==2) [*1:$] ##1 (read_count==0); 
 		endsequence 
 
 	property x8read_count_plus1;
@@ -387,7 +382,7 @@ x8_rd_countplus1:	assert property (x8read_count_plus1) $display("\n\n\n+++++++++
 
  
 	sequence ci;
-			(app_rd_data[7:0] == mem_rd_data); 
+			(saved_rd_data[7:0] == app_rd_data[7:0]); 
 		endsequence 
 
 	property read1_8bits;
@@ -398,7 +393,7 @@ x8_rd_countplus1:	assert property (x8read_count_plus1) $display("\n\n\n+++++++++
 //------------------------------------------------------------------------	
 	
 	sequence di;
-			(app_rd_data[15:8]  <= mem_rd_data); 
+			(saved_rd_data[15:8]  == app_rd_data[15:8]); 
 		endsequence 
 
 	property read2_8bits;
@@ -408,7 +403,7 @@ x8_rd_countplus1:	assert property (x8read_count_plus1) $display("\n\n\n+++++++++
 //--------------------------------------------------------------------		
 	
 	sequence ei;
-			(app_rd_data[23:16] <= mem_rd_data); //Para 16 bits se necesitan 2 cuentas
+			(saved_rd_data[23:16] == app_rd_data[23:16]); //Para 16 bits se necesitan 2 cuentas
 		endsequence 
 
 	property read3_8bits;
@@ -425,33 +420,13 @@ x8_read1:	assert property (read1_8bits) $display("\n\n\n++++++++++++++++++++++++
  x8_read3:	assert property (read3_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO LA	LECTURA3 de 8bits\n\n\n");
 	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA LECTURA3 de 8bits\n\n\n");	
  
-	
-
-
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-
 
 // -------MONITOREO DE sdr_widt CUANDO SDR_32BIT/16/8-------------
 
 //	cover_sdr_width: coverpoint sdr_width;
 		
 
-		
-		
-	
-	
  `endif
 
 endmodule 	

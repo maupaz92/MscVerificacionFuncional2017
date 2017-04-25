@@ -4,7 +4,7 @@
 `define REQ_GEN_MODULE_PATH testbench_top.DUV.u_sdrc_core.u_req_gen
 `define SDRC_XFR_CTL_PATH testbench_top.DUV.u_sdrc_core.u_xfr_ctl
 `define SDRC_BS_CONVERT_PATH testbench_top.DUV.u_sdrc_core.u_bs_convert
-`define wb2sdrc_PATH  testbench_top.DUV.u_wb2sdrc
+//`define CAS_Flag  testbench_top.test
 
 interface assertion_interface;
 
@@ -26,11 +26,6 @@ interface assertion_interface;
 	logic               sdr_cas_n         ; // SDRAM cas
 	logic				sdr_we_n          ;// SDRAM write enable
 	logic               sdr_init_done     ;
-	
-	logic               sdr_rd_valid     ;
-	logic [31:0]        sdr_rd_data     ;
-	logic [2:0]         cfg_sdr_cas     ;
-	logic [12:0]        cfg_sdr_mode_reg     ;
 	
 	// signal definition for 3rd delivery, cover plan
 	
@@ -65,7 +60,7 @@ interface assertion_interface;
 	logic x2a_wrnext;
 	logic app_rd_valid;
 	logic app_wr_next;
-	
+	logic [23:0] saved_rd_data;
 	
 	//************************************************************************************	
 	assign clk 		= `TOP_PATH.wb_clk_i;
@@ -84,11 +79,6 @@ interface assertion_interface;
 	assign sdr_init_done	= `TOP_PATH.sdr_init_done;
 	assign sdram_clk		= `TOP_PATH.sdram_clk;
 	assign sdram_resetn		= `TOP_PATH.sdram_resetn;
-	
-	assign sdr_rd_valid		= `wb2sdrc_PATH.sdr_rd_valid;
-	assign sdr_rd_data		= `wb2sdrc_PATH.sdr_rd_data;
-	assign cfg_sdr_cas		= `TOP_PATH.cfg_sdr_cas;
-	assign cfg_sdr_mode_reg		= `TOP_PATH.cfg_sdr_mode_reg;
 	
 	
 	
@@ -142,7 +132,7 @@ interface assertion_interface;
 	assign x2a_wrnext = `SDRC_BS_CONVERT_PATH.x2a_wrnext;
 	assign app_wr_next = `SDRC_BS_CONVERT_PATH.app_wr_next;
 	//assign app_rd_valid = `SDRC_BS_CONVERT_PATH.app_rd_valid; --> ya esta asignada en el CAS
-	
+	assign saved_rd_data = `SDRC_BS_CONVERT_PATH.saved_rd_data;
 	
 	
 	
