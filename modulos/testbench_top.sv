@@ -3,6 +3,11 @@
 
 //`include "./RTL/core/sdr_define.v"
 //`define SDR_16BIT
+`define SDR_32BIT
+`define CFG_COL_8BIT
+//`define CFG_COL_9BIT
+//`define CFG_COL_10BIT
+//`define CFG_COL_11BIT
 
 module testbench_top;
 

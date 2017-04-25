@@ -18,6 +18,7 @@ interface assertion_interface;
 	logic sel;
 	logic ack;
 	logic cyc;
+	logic [25:0] addr_i;
 	
 	logic 				sdram_clk;
 	logic				sdram_resetn;
@@ -80,6 +81,7 @@ interface assertion_interface;
 	assign sel 		= `TOP_PATH.wb_sel_i;
 	assign ack		= `TOP_PATH.wb_ack_o;
 	assign cyc		= `TOP_PATH.wb_cyc_i;
+	assign addr_i= `TOP_PATH.wb_addr_i;
 	
 	assign sdr_cke			= `TOP_PATH.sdr_cke;
 	assign sdr_cs_n 		= `TOP_PATH.sdr_cs_n;
