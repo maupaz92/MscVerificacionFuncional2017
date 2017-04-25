@@ -5,6 +5,7 @@
 `define SDRC_XFR_CTL_PATH testbench_top.DUV.u_sdrc_core.u_xfr_ctl
 `define SDRC_BS_CONVERT_PATH testbench_top.DUV.u_sdrc_core.u_bs_convert
 //`define CAS_Flag  testbench_top.test
+`define wb2sdrc_PATH  testbench_top.DUV.u_wb2sdrc
 
 interface assertion_interface;
 
