@@ -80,7 +80,7 @@ x32_bit_prueba_rd_wr: assert property (write_read_32bits) $display("\n\n\n++++++
 			}
 		
 		x16_rd_count: coverpoint read_count{
-			bins x16_rd_count_bin = {2'b01, 2'b10};			//evalua el conteo de reads
+			bins _bin = {2'b01, 2'b10};			//evalua el conteo de reads
 			}
 	
 		endgroup	
@@ -329,17 +329,17 @@ x8_wr_countplus1:		assert property (x8write_count_plus1) $display("\n\n\n+++++++
 
 		
 
-x8_wr1:	assert property (write1_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA PRIMER TRAMA DE 16bits\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA PRIMER TRAMA DE 16bits\n\n\n");
+x8_wr1:	assert property (write1_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA PRIMER TRAMA DE 8bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA PRIMER TRAMA DE 8bits\n\n\n");
 	
-x8_wr2:	assert property (write2_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA SEGUNDA TRAMA DE 16bits\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA SEGUNDA TRAMA DE 16bits\n\n\n");
+x8_wr2:	assert property (write2_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA SEGUNDA TRAMA DE 8bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA SEGUNDA TRAMA DE 8bits\n\n\n");
 
-x8_wr3:	assert property (write3_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA TERCER TRAMA DE 16bits\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA TERCER TRAMA DE 16bits\n\n\n");
+x8_wr3:	assert property (write3_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA TERCER TRAMA DE 8bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA TERCER TRAMA DE 8bits\n\n\n");
 	
-x8_wr4:	assert property (write4_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA CUARTA TRAMA DE 16bits\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA CUARTA TRAMA DE 16bits\n\n\n");
+x8_wr4:	assert property (write4_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++  SE PASO LA CUARTA TRAMA DE 8bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE PASO LA CUARTA TRAMA DE 8bits\n\n\n");
 	
 
 
@@ -418,8 +418,12 @@ x8_rd_countplus1:	assert property (x8read_count_plus1) $display("\n\n\n+++++++++
 		
 		
 		
-x8_read:	assert property (read3_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO LA	LECTURA\n\n\n");
-	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA LECTURA\n\n\n");	
+x8_read1:	assert property (read1_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO LA	LECTURA1 de 8bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA LECTURA1 de 8bits\n\n\n");	
+ x8_read2:	assert property (read2_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO LA	LECTURA2 de 8bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA LECTURA2 de 8bits\n\n\n");	
+ x8_read3:	assert property (read3_8bits) $display("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  SI SE CUMPLIO LA	LECTURA3 de 8bits\n\n\n");
+	else $error ("\n\n\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  NO SE CUMPLIO LA LECTURA3 de 8bits\n\n\n");	
  
 	
 
