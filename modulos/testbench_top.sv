@@ -101,6 +101,14 @@ module testbench_top;
 		.white_box_intf(white_box_intf)
 		);
 		
+	//***********************************************************************
+	// Four banks Coverage and Assertions
+	//***********************************************************************
+	
+	Banks_coverage bank_verif_aserciones(
+		.white_box_intf(white_box_intf)
+		);
+		
 	test test_program(
 		.driver_port(system_interface.driver_port),
 		.monitor_port(system_interface.monitor_port),
