@@ -48,6 +48,7 @@ interface assertion_interface;
 	logic [12:0] sdram_mode_reg;
 	logic x2a_rdok;
 	logic app_rd_valid;
+	logic [31:0] data_read;
 	
 	//8/16/32 signals---------------------->
 	
@@ -120,6 +121,8 @@ interface assertion_interface;
 	assign sdram_mode_reg 		= `SDRC_XFR_CTL_PATH.sdram_mode_reg;				//Mode Reg 
 	assign x2a_rdok 		= `SDRC_XFR_CTL_PATH.x2a_rdok;				//READ ready 
 	assign app_rd_valid 		= `SDRC_BS_CONVERT_PATH.app_rd_valid;				//READ Data ready
+	assign data_read = `SDRC_BS_CONVERT_PATH.app_rd_data;				//READ Data
+	
 	
 	
 	//************************************************************************************
