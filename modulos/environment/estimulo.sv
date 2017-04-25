@@ -1,5 +1,5 @@
 virtual class estimulo #(
-	int APP_AW = 26,
+	int APP_AW = 32,
 	int APP_BL = 9
 	);
 

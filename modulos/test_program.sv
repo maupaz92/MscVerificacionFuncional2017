@@ -9,7 +9,7 @@ program test(
 );
 
 	environment test_bench_environment;
-	estimulo1 #(.APP_AW(26), .APP_BL(9)) primera_prueba;
+	estimulo1 #(.APP_AW(32), .APP_BL(9)) primera_prueba;
 	
 	
 	reg [31:0] error_count;
@@ -42,11 +42,13 @@ program test(
 		$display(" 						Case-2: Single Write/Read Case        			   	   ");
 		$display("---------------------------------------------------------------------------- ");
 		assert_flag = 1;
+		repeat (10) begin
 		if (primera_prueba.randomize())
 			test_bench_environment.write_to_memory(primera_prueba);
 		else
-			$display("---------------------------------------------------------------------mierda");
+			$display("---------------------------------------------------------------------No sirvio el randomize");
 		test_bench_environment.read_data(error_count);
+		end
 		assert_flag = 0;
 		
 		
