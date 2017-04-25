@@ -85,28 +85,35 @@ module cas_latency(assertion_interface white_box_intf
 	
 	Cfg_Verificacion_Senales: assert property (Senales_verf) else $error("Cfg_Verificacion_Senales 3 error"); //Evalua que el dato este cuando se supone tiene que estar
 	
-	
-	
+
 	//Verificacion de ciclos
 	
-	// sequence Mem_32;
-		// read_ready and  data_valid;
-	// endsequence
+	sequence cas2_verf;
+		##4 read_ready;
+	endsequence
 	
-	// sequence Mem_16_cas3;
-		// read_ready ##2  data_valid;
-	// endsequence
-
-	// sequence Mem_8_cas3;
-		// read_ready ##6  data_valid;
-	// endsequence
+	sequence cas3_verf;
+		##5 read_ready;
+	endsequence
 	
-	// property ciclos_cas2;
-		// @(posedge white_box_intf.sdram_clk) disable iff(enable_cas_flag)
-		// (Mem_32 or Mem_16_cas3 or Mem_8_cas3); 
-	// endproperty
 	
-	// Cfg_ciclos_cas2: assert property (ciclos_cas2) $display("Ciclos_listo exitoso");			//Evalua que el dato este cuando se supone tiene que estar
-	// else $error("Ciclos_listo 3 error");
+	property ciclos_cas2;
+		@(posedge white_box_intf.sdram_clk) disable iff(~enable_cas_flag)
+		($rose(white_box_intf.rd_start)|-> cas2_verf); 
+	endproperty
+	
+	
+	Cfg_ciclos_cas2: assert property (ciclos_cas2) $display("Ciclos_listo exitoso");			//Evalua que el dato este cuando se supone tiene que estar
+	else $error("Ciclos_listo 2 error");
+	
+	
+	property ciclos_cas3;
+		@(posedge white_box_intf.sdram_clk) disable iff(enable_cas_flag)
+		($rose(white_box_intf.rd_start) |-> cas3_verf); 
+	endproperty
+	
+	
+	Cfg_ciclos_cas3: assert property (ciclos_cas3) $display("Ciclos_listo exitoso");			//Evalua que el dato este cuando se supone tiene que estar
+	else $error("Ciclos_listo 3 error");
 	
 endmodule 	
