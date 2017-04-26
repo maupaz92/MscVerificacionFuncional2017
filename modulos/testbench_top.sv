@@ -2,7 +2,7 @@
 `timescale 1ns/1ps
 
 //`include "./RTL/core/sdr_define.v"
-//`define SDR_16BIT
+//`define SDR_32BIT
 
 module testbench_top;
 
