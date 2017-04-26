@@ -28,3 +28,4 @@
 ./aserciones_program_col_addr.sv
 ./cas_latency.sv
 ./aserciones_8_16_32.sv
+./bank_verif_aserciones.sv

@@ -8,38 +8,56 @@ module aserciones_program_col_addr(
 	);
 
 
-	logic [12:0] row_temp; 
-	logic [11:0] col_temp; 
-	logic [1:0] bank_temp;
+	reg [12:0] row_temp_wb; 
+	reg [11:0] col_temp_wb; 
+	reg [1:0] bank_temp_wb;
+	
+	//reg [12:0] row_temp_mem; 
+	//localparam [11:0] comparador; 
+	`ifdef SDR_32BIT
+		localparam comparador = 8;//12'h0ff;
+	`else
+		localparam comparador = 9;//12'h1ff;
+	`endif
+	//reg [1:0] bank_temp_mem;
+	//int limite;
 	
 	
-	
-	always @ (posedge white_box_intf.clk) begin
+	always @ (posedge white_box_intf.sdram_clk) begin
+		
 		if (white_box_intf.cfg_colbits == 00) begin 
-				assign col_temp 	= white_box_intf.memory_address[7:0];
-				assign bank_temp 	= white_box_intf.memory_address[9:8];
-				assign row_temp 	= white_box_intf.memory_address[22:10];
+				col_temp_wb 	= white_box_intf.addr_i[7:0];
+				bank_temp_wb 	= white_box_intf.addr_i[9:8];
+				row_temp_wb 	= white_box_intf.addr_i[22:10];
+				//col_temp_mem	= white_box_intf.sdr_addr[7:0];
+				//comparador = 12'h0ff;
 		end 
 		else if (white_box_intf.cfg_colbits == 01) begin 
-				assign col_temp 	= white_box_intf.memory_address[8:0];
-				assign bank_temp 	= white_box_intf.memory_address[10:9];
-				assign row_temp 	= white_box_intf.memory_address[23:11];
+				col_temp_wb 	= white_box_intf.addr_i[8:0];
+				bank_temp_wb 	= white_box_intf.addr_i[10:9];
+				row_temp_wb 	= white_box_intf.addr_i[23:11];
+				//col_temp_mem	= white_box_intf.sdr_addr[8:0];
+				//comparador = 12'h1ff;
 		end 
 		else if (white_box_intf.cfg_colbits == 10) begin 
-				assign col_temp 	= white_box_intf.memory_address[9:0];
-				assign bank_temp 	= white_box_intf.memory_address[11:10];
-				assign row_temp 	= white_box_intf.memory_address[24:12];
+				col_temp_wb 	= white_box_intf.addr_i[9:0];
+				bank_temp_wb 	= white_box_intf.addr_i[11:10];
+				row_temp_wb 	= white_box_intf.addr_i[24:12];
+				//col_temp_mem	= white_box_intf.sdr_addr[9:0];
+				//comparador = 12'h2ff;
 		end 
 		else begin 
-				assign col_temp 	= white_box_intf.memory_address[10:0];
-				assign bank_temp 	= white_box_intf.memory_address[12:11];
-				assign row_temp 	= white_box_intf.memory_address[25:13];
+				col_temp_wb 	= white_box_intf.addr_i[10:0];
+				bank_temp_wb 	= white_box_intf.addr_i[12:11];
+				row_temp_wb 	= white_box_intf.addr_i[25:13];
+				//ol_temp_mem	= white_box_intf.sdr_addr[10:0];
+				//comparador = 12'h3ff;
 		end 
 	end
 	
 	
 	// sequences
-	
+/* 	
 	sequence req_cfg;
 		$rose(white_box_intf.whbox_wren);
 	endsequence
@@ -63,26 +81,34 @@ module aserciones_program_col_addr(
 	property combinacion;
 		@(posedge white_box_intf.sdram_clk) disable iff(~enable_colbits_flag)
 			(req_cfg |=> matchaddr);
-	endproperty
+	endproperty */
 		
 		
 	//---------- 
 		
-	sequence validacion_addr_dummy;
-		(white_box_intf.sdr_addr == 0);
-	endsequence
+	//sequence validacion_addr;
+		//(white_box_intf.sdr_addr == col_temp);
+	//endsequence
 	
-	property print_addr;
+	property validacion_addr;
 		@(posedge white_box_intf.sdram_clk)
-			$rose(white_box_intf.x2a_wrstart) |-> validacion_addr_dummy;
+			// cuando haya un write, se evalua si la columna que va hacia la mem sea igual a la que 
+			// entro hacia el WB
+			$rose(white_box_intf.x2a_wrstart) |-> (col_temp_wb ^ white_box_intf.sdr_addr[comparador-1:0] ) !== 0;
 	endproperty
 	
-	addr_cero: assert property (print_addr)
-		$display("direccion igual a cero");
+	addr_cero: assert property (validacion_addr)
+		$display("direcciones identicas valor %x ", (col_temp_wb ^ white_box_intf.sdr_addr[comparador-1:0] ));
 	else begin		
-		$display("=======> dir igual a : %x", white_box_intf.sdr_addr);
+		//$display("=======> dir igual WB : %x, MEM: %x ", col_temp_wb, (white_box_intf.sdr_addr[comparador-1:0]) );
+		$display("=======> direcciones diferentes WB : %x, MEM: %x ", col_temp_wb, (col_temp_wb ^ white_box_intf.sdr_addr[comparador-1:0] ) );
 	end
 
+	//---------- 
+	//property verif_colbits_uno;
+		//@(posedge white_box_intf.sdram_clk) iff(white_box_intf.cfg_colbits == 2'b00)
+			
+	//endproperty
 	
 /* 	// Assertion to verify the expected row, colum, bank in the request is the same
 	CfgcolumCh: assert property (combinacion)
